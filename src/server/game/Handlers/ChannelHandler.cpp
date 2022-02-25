@@ -41,18 +41,22 @@ bool WorldSession::ChannelCheck(std::string channel)
 
 void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
 {
+    uint32 channelId;
+    uint32 channelLength, passLength;
+    std::string channelName, password;
 
-    uint32 channelId = recvPacket.read<uint32>();
-    recvPacket.ReadBit(); // unk bit
-    uint32 channelLength = recvPacket.ReadBits(7);
-    uint32 passLength = recvPacket.ReadBits(7);
-    recvPacket.ReadBit(); // unk bit
+    recvPacket >> channelId;
 
-    std::string password = recvPacket.ReadString(passLength);
-    std::string channelName = recvPacket.ReadString(channelLength);
+    uint8 unknown1 = recvPacket.ReadBit();                  // unknown bit
+    channelLength = recvPacket.ReadBits(7);
+    passLength = recvPacket.ReadBits(7);
+    uint8 unknown2 = recvPacket.ReadBit();                  // unknown bit
 
-    TC_LOG_DEBUG("chat.system", "CMSG_JOIN_CHANNEL %s Channel: %u, channel: %s, password: %s",
-        GetPlayerInfo().c_str(), channelId, channelName.c_str(), password.c_str());
+    channelName = recvPacket.ReadString(channelLength);
+    password = recvPacket.ReadString(passLength);
+
+    TC_LOG_DEBUG("chat.system", "CMSG_CHAT_JOIN_CHANNEL %s Channel: %u, unk1: %u, unk2: %u, channel: %s, password: %s",
+        GetPlayerInfo().c_str(), channelId, unknown1, unknown2, channelName.c_str(), password.c_str());
 
     if (channelId)
     {
@@ -63,84 +67,9 @@ void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
         AreaTableEntry const* zone = sAreaTableStore.LookupEntry(GetPlayer()->GetZoneId());
         if (!zone || !GetPlayer()->CanJoinConstantChannelInZone(channel, zone))
             return;
-
-        if (!(channel->flags & CHANNEL_DBC_FLAG_GLOBAL))
-        {
-            char new_channel_name_buf[200];
-            char const* currentNameExt;
-
-            if (channel->flags & CHANNEL_DBC_FLAG_CITY_ONLY)
-            {
-				if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
-                {
-                    char cityName[200];
-                    if (!sscanf(channelName.c_str(), channel->pattern[GetSessionDbcLocale()], cityName) &&
-                        !sscanf(channelName.c_str(), channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)], cityName) ||
-                        strcmp(sObjectMgr->GetTrinityString(LANG_CHANNEL_CITY, GetSessionDbcLocale()), cityName))
-                        return;
-                }
-                currentNameExt = sObjectMgr->GetTrinityString(LANG_CHANNEL_CITY, LocaleConstant(sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)));
-            }
-            else
-            {
-				if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
-                {
-                    char zoneName[200];
-                    if (!sscanf(channelName.c_str(), channel->pattern[GetSessionDbcLocale()], zoneName) &&
-                        !sscanf(channelName.c_str(), channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)], zoneName) ||
-                        strcmp(zone->area_name[GetSessionDbcLocale()], zoneName))
-                        return;
-                }
-                currentNameExt = zone->area_name[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)];
-            }
-
-            snprintf(new_channel_name_buf, 200, channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)], currentNameExt);
-            channelName = new_channel_name_buf;
-        }
-        else
-            channelName = channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)];
     }
-    else
-    {
-        std::wstring channelNameUpper;
-        bool converted = Utf8toWStr(channelName, channelNameUpper);
-        wstrToUpper(channelNameUpper);
-        for (uint32 id = 1; id < sChatChannelsStore.GetNumRows(); ++id)
-        {
-            for (uint32 locale = 0; locale < TOTAL_LOCALES; ++locale)
-            {
-                if (ChatChannelsEntry const* channel = sChatChannelsStore.LookupEntry(id))
-                {
-                    if (channel->name[locale] && *channel->name[locale])
-                    {
-                        std::string dbcName = channel->name[locale];
-                        std::wstring dbcNameUpper;
-                        if (converted && Utf8toWStr(dbcName, dbcNameUpper) ? wstrToUpper(dbcNameUpper), !channelNameUpper.compare(dbcNameUpper) : !channelName.compare(dbcName))
-                        {
-                            if (GetSessionDbLocaleIndex() == LOCALE_ruRU)
-                                ChatHandler(this).PSendSysMessage("|cFFFF0000Вы пытаетесь создать пользовательский канал чата с зарезервированным названием. Для входа в желаемый канал используйте команду \"/войти %s\".|r", channel->name[GetSessionDbcLocale()]);
-                            else if (channel->flags & CHANNEL_DBC_FLAG_LFG)
-                                ChatHandler(this).PSendSysMessage("|cFFFF0000You are trying to create a custom chat channel with a reserved name. Please use \"/join %s\" command to enter the desired channel. If you are using a patch, that translates the name of the channel to \"%s\", be aware that it is no longer required and can be deleted, but if you're still using it, the command you want to use is \"/join %s\".|r", channel->name[GetSessionDbcLocale()], channel->name[LOCALE_ruRU], channel->name[LOCALE_ruRU]);
-                            else
-                                ChatHandler(this).PSendSysMessage("|cFFFF0000You are trying to create a custom chat channel with a reserved name. Please use \"/join %s\" command to enter the desired channel.|r", channel->name[GetSessionDbcLocale()]);
-
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-	if (!utf8::is_valid(channelName.begin(), channelName.end()))
-	{
-		return;
-	}
 
     if (channelName.empty())
-        return;
-
-    if (!ChatHandler::ValidatePipeSequence(channelName))
         return;
 
     if (ChannelMgr* cMgr = ChannelMgr::forTeam(GetPlayer()->GetTeam()))

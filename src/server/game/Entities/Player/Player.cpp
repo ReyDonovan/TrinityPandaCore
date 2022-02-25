@@ -6085,6 +6085,8 @@ void Player::UpdateLocalChannels(uint32 newZone)
     if (!cMgr)
         return;
 
+    std::string current_zone_name = current_zone->area_name[GetSession()->GetSessionDbcLocale()];
+ 
     for (uint32 i = 0; i < sChatChannelsStore.GetNumRows(); ++i)
     {
         if (ChatChannelsEntry const* channel = sChatChannelsStore.LookupEntry(i))
@@ -6111,15 +6113,15 @@ void Player::UpdateLocalChannels(uint32 newZone)
                     if (channel->flags & CHANNEL_DBC_FLAG_CITY_ONLY && usedChannel)
                         continue;                            // Already on the channel, as city channel names are not changing
 
-                    char new_channel_name_buf[200];
+                    char new_channel_name_buf[100];
                     char const* currentNameExt;
 
                     if (channel->flags & CHANNEL_DBC_FLAG_CITY_ONLY)
-                        currentNameExt = sObjectMgr->GetTrinityString(LANG_CHANNEL_CITY, LocaleConstant(sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)));
+                        currentNameExt = sObjectMgr->GetTrinityStringForDBCLocale(LANG_CHANNEL_CITY);
                     else
-                        currentNameExt = current_zone->area_name[GetSession()->GetSessionDbcLocale()];
+                        currentNameExt = current_zone_name.c_str();
 
-                    snprintf(new_channel_name_buf, 200, channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)], currentNameExt);
+                    snprintf(new_channel_name_buf, 100, channel->pattern[m_session->GetSessionDbcLocale()], currentNameExt);
 
                     joinChannel = cMgr->GetJoinChannel(new_channel_name_buf, channel->ChannelID);
                     if (usedChannel)
@@ -6134,7 +6136,7 @@ void Player::UpdateLocalChannels(uint32 newZone)
                     }
                 }
                 else
-                    joinChannel = cMgr->GetJoinChannel(channel->pattern[sWorld->getIntConfig(CONFIG_CHANNEL_CONSTANT_LOCALE)], channel->ChannelID);
+                    joinChannel = cMgr->GetJoinChannel(channel->pattern[m_session->GetSessionDbcLocale()], channel->ChannelID);
             }
             else
                 removeChannel = usedChannel;

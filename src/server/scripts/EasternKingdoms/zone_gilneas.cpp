@@ -881,7 +881,77 @@ public:
     };
 };
 
-/* QUEST - 14154 - By The Skin of His Teeth - END */
+class npc_captured_riding_bat : public CreatureScript
+{
+public:
+    npc_captured_riding_bat() : CreatureScript("npc_captured_riding_bat") {}
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_captured_riding_batAI (creature);
+    }
+
+    struct npc_captured_riding_batAI : public npc_escortAI
+    {
+        npc_captured_riding_batAI(Creature* creature) : npc_escortAI(creature) {}
+
+        bool PlayerOn;
+
+        void AttackStart(Unit* /*who*/) {}
+        void EnterCombat(Unit* /*who*/) {}
+        void EnterEvadeMode() {}
+
+        void Reset()
+        {
+             PlayerOn       = false;
+        }
+
+        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
+        {
+            if (who->GetTypeId() == TYPEID_PLAYER)
+            {
+                PlayerOn = true;
+                if (apply)
+                    Start(false, true, who->GetGUID(), NULL, NULL, true);
+            }
+        }
+
+        void WaypointReached(uint32 i)
+        {
+            Player* player = GetPlayerForEscort();
+            switch(i)
+            {
+                case 35:
+                    player->ExitVehicle();
+                    player->SetClientControl(me, 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void JustDied(Unit* /*killer*/)
+        {
+
+        }
+
+        void OnCharmed(bool /*apply*/)
+        {
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            npc_escortAI::UpdateAI(diff);
+            Player* player = GetPlayerForEscort();
+
+            if (PlayerOn)
+            {
+                player->SetClientControl(me, 0);
+                PlayerOn = false;
+            }
+        }
+    };
+};
 
 void AddSC_gilneas()
 {
@@ -891,4 +961,5 @@ void AddSC_gilneas()
     new npc_worgen_alpha_c1();
     new npc_worgen_runt_c2();
     new npc_worgen_alpha_c2();
+    new npc_captured_riding_bat();
 }

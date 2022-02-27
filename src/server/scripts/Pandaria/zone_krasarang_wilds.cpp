@@ -2925,6 +2925,27 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
     }
 };
 
+enum YiMoLongbrow
+{
+    QUEST_FINDING_YI_MO       = 30080,
+    NPC_YI_MO_LONGBROW        = 58376,
+    NPC_YI_MO_LONGBROW_CREDIT = 57745
+
+};
+
+class npc_yi_mo_longbrow : public CreatureScript
+{
+    public:
+        npc_yi_mo_longbrow() : CreatureScript("npc_yi_mo_longbrow") { }
+
+        bool OnGossipHello(Player* player, Creature* creature) override
+        {
+            if (player->GetQuestStatus(QUEST_FINDING_YI_MO) == QUEST_STATUS_INCOMPLETE && creature->GetEntry() == NPC_YI_MO_LONGBROW)
+                player->KilledMonsterCredit(NPC_YI_MO_LONGBROW_CREDIT);
+            return true;
+        }
+};
+
 void AddSC_krasarang_wilds()
 {
     new npc_arness_the_scale();
@@ -2977,4 +2998,5 @@ void AddSC_krasarang_wilds()
     new creature_script<npc_na_lek>("npc_na_lek");
     new creature_script<npc_the_bell_peaks_start>("npc_the_bell_peaks_start");
     new creature_script<npc_lorekeeper_vaeldrin>("npc_lorekeeper_vaeldrin");
+    new npc_yi_mo_longbrow();
 }

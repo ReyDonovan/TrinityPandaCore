@@ -33,14 +33,6 @@ enum Friends
     //by 46598 they sit to veh
 };
 
-//int QuestTemplateData [4][4] = {
-//    //entry     visibility   resumon seatID
-//    {0, 0, 0},
-//    {34959, INVISIBILITY_UNK9, 66646, 3},   // IZZY
-//    {34957, INVISIBILITY_UNK7, 66644, 1},   // ACE
-//    {34958, INVISIBILITY_UNK8, 66645, 2}    // GOBER
-//};
-
 struct npc_roling_friends : public ScriptedAI
 {
     npc_roling_friends(Creature* creature) : ScriptedAI(creature) { }

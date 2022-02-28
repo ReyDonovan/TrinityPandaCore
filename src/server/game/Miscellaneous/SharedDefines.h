@@ -79,12 +79,12 @@ enum LootModes
 
 enum Expansions
 {
-    EXPANSION_CLASSIC = 0,
-    EXPANSION_THE_BURNING_CRUSADE = 1,
+    EXPANSION_CLASSIC                = 0,
+    EXPANSION_THE_BURNING_CRUSADE    = 1,
     EXPANSION_WRATH_OF_THE_LICH_KING = 2,
-    EXPANSION_CATACLYSM = 3,
-    EXPANSION_MISTS_OF_PANDARIA = 4,
-    MAX_EXPANSIONS = 5
+    EXPANSION_CATACLYSM              = 3,
+    EXPANSION_MISTS_OF_PANDARIA      = 4,
+    MAX_EXPANSIONS                   = 5
 };
 
 enum Gender

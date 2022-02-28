@@ -2797,6 +2797,8 @@ public:
         m_grantableLevels = val;
     }
 
+    Expansions GetExpByLevel();
+
     ReputationMgr&       GetReputationMgr()
     {
         return *m_reputationMgr;
@@ -2808,6 +2810,7 @@ public:
     ReputationRank GetReputationRank(uint32 faction_id) const;
     void RewardReputation(Unit* victim, float rate);
     void RewardReputation(Quest const* quest);
+    void RewardGuildReputation(Quest const* quest);
     void RewardReputationOnChampioning(Unit* victim);
 
     float CalculateReputationGain(ReputationSource source, uint32 creatureOrQuestLevel, int32 rep, int32 faction, bool noQuestBonus = false);

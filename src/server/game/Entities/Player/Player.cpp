@@ -7561,6 +7561,47 @@ void Player::RewardReputation(Quest const* quest)
     }
 }
 
+Expansions Player::GetExpByLevel()
+{
+    uint8 level = getLevel();
+
+    if (level <= 60)
+        return EXPANSION_CLASSIC;
+    else if (level <= 70)
+        return EXPANSION_THE_BURNING_CRUSADE;
+    else if (level <= 80)
+        return EXPANSION_WRATH_OF_THE_LICH_KING;
+    else if (level <= 85)
+        return EXPANSION_CATACLYSM;
+    else if (level <= 90)
+        return EXPANSION_MISTS_OF_PANDARIA;
+    else
+        return EXPANSION_CLASSIC;
+}
+
+void Player::RewardGuildReputation(Quest const* quest)
+{
+    uint32 rep = 0;
+
+    switch (GetExpByLevel())
+    {
+        case EXPANSION_CLASSIC:                rep = 25;  break;
+        case EXPANSION_THE_BURNING_CRUSADE:    rep = 50;  break;
+        case EXPANSION_WRATH_OF_THE_LICH_KING: rep = 75;  break;
+        case EXPANSION_CATACLYSM:              rep = 100; break;
+        case EXPANSION_MISTS_OF_PANDARIA:      rep = 150; break;
+        default:                               rep = 0;   break;
+    }
+
+    rep = CalculateReputationGain(REPUTATION_SOURCE_QUEST, GetQuestLevel(quest), rep, GUILD_REPUTATION_ID, true);
+
+    if (GetsRecruitAFriendBonus(false))
+        rep = int32(rep * (1 + sWorld->getRate(RATE_REPUTATION_RECRUIT_A_FRIEND_BONUS)));
+
+    if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(GUILD_REPUTATION_ID))
+        GetReputationMgr().ModifyReputation(factionEntry, rep);
+}
+
 void Player::RewardReputationOnChampioning(Unit* victim)
 {
     Creature* target = victim->ToCreature();
@@ -17161,6 +17202,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
         UpdateSkillPro(skill, 1000, quest->GetRewardSkillPoints());
 
     RewardReputation(quest);
+    RewardGuildReputation(quest);
 
     uint16 log_slot = FindQuestSlot(quest_id);
     if (log_slot < MAX_QUEST_LOG_SIZE)

@@ -98,7 +98,6 @@ LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth_mop"
 WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world_mop"
 CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters_mop"
 ArchiveDatabaseInfo   = "127.0.0.1;3306;trinity;trinity;archive_mop"
-FusionCMSDatabaseInfo = "127.0.0.1;3306;trinity;trinity;fusion_mop"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -132,7 +131,6 @@ LoginDatabase.SynchThreads     = 1
 WorldDatabase.SynchThreads     = 1
 CharacterDatabase.SynchThreads = 2
 ArchiveDatabase.SynchThreads   = 1
-FusionCMSDatabase.SynchThreads = 1
 
 #
 #    MaxPingTime

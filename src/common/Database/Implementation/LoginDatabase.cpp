@@ -142,4 +142,12 @@ void LoginDatabaseConnection::DoPrepareStatements()
     PrepareStatement(LOGIN_INS_project_MEMBER_REWARD, "INSERT INTO project_member_rewards (member_id, character_guid, account_id, realmid, source_type, source_id, reward_amount, reward_date, reward_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
 
     PrepareStatement(LOGIN_INS_ARENA_GAMES, "INSERT INTO arena_games (`gameid`, `teamid`, `guid`, `changeType`, `ratingChange`, `teamRating`, `damageDone`, `deaths`, `healingDone`, `damageTaken`, `healingTaken`, `killingBlows`, `damageAbsorbed`, `timeControlled`, `aurasDispelled`, `aurasStolen`, `highLatencyTimes`, `spellsPrecast`, `mapId`, `start`, `end`, `class`, `season`, `type`, `realmid`, `matchMakerRating`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+	
+	// BattlePay
+	PrepareStatement(LOGIN_SEL_BATTLEPAY_COINS, "SELECT dp FROM account_data WHERE id = ?", CONNECTION_SYNCH);
+	PrepareStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_COINS, "UPDATE account_data SET dp = dp + ? WHERE id = ?", CONNECTION_SYNCH);
+	PrepareStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS, "UPDATE account_data SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
+
+    // Custom Reward
+    PrepareStatement(LOGIN_UPD_BATTLEPAY_VP_COINS, "UPDATE account_data SET vp = vp + ? WHERE id = ?;", CONNECTION_SYNCH);
 }

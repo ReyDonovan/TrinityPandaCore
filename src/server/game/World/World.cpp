@@ -3690,7 +3690,7 @@ void World::DBCleanup()
     if (sWorld->getIntConfig(CONFIG_CURRENCY_LOG_CLEAR_INTERVAL) > 0)
     {
         uint32 timeToKeep = time(NULL) - sWorld->getIntConfig(CONFIG_CURRENCY_LOG_CLEAR_INTERVAL);
-        ArchiveDatabase.PExecute("DELETE FROM `currency_transactions` WHERE `unix_time` < %u", timeToKeep);
+        LoginDatabase.PExecute("DELETE FROM `currency_transactions` WHERE `unix_time` < %u", timeToKeep);
     }
 }
 

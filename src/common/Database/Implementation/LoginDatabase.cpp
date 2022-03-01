@@ -150,4 +150,6 @@ void LoginDatabaseConnection::DoPrepareStatements()
 
     // Custom Reward
     PrepareStatement(LOGIN_UPD_BATTLEPAY_VP_COINS, "UPDATE account_data SET vp = vp + ? WHERE id = ?;", CONNECTION_SYNCH);
+	
+    PrepareStatement(LOGIN_INS_CURRENCY_TRANSACTIONS, "INSERT INTO `currency_transactions` (`guid`, `unix_time`, `operation`, `param`, `attachments`, `amount_before`, `amount_after`, `realmid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
 }

@@ -72,7 +72,7 @@ find_package(ACE REQUIRED)
 find_package(MySQL REQUIRED)
 
 if(NOT WITHOUT_GIT)
-  find_package(Git)
+  find_package(Git 1.7)
 endif()
 
 # Find revision ID and hash of the sourcetree

@@ -67,8 +67,13 @@ include(GroupSources)
 include(AutoCollect)
 include(Macros)
 
+set(OPENSSL_EXPECTED_VERSION 1.1.1)
+set(ACE_EXPECTED_VERSION 6.4.5)
+
 find_package(PCHSupport)
 find_package(ACE REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(Threads REQUIRED)
 find_package(MySQL REQUIRED)
 
 if(NOT WITHOUT_GIT)

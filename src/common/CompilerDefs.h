@@ -57,4 +57,16 @@
 #  error "FATAL ERROR: Unknown compiler."
 #endif
 
+#if defined(__cplusplus) && __cplusplus == 201103L
+#  define COMPILER_HAS_CPP11_SUPPORT 1
+#else
+#  define COMPILER_HAS_CPP11_SUPPORT 0
+#endif
+
+#if defined(__cplusplus) && __cplusplus == 201402L
+#  define COMPILER_HAS_CPP14_SUPPORT 1
+#else
+#  define COMPILER_HAS_CPP14_SUPPORT 0
+#endif
+
 #endif

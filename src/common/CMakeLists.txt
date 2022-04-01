@@ -60,9 +60,9 @@ target_link_libraries(common
     process
     trinity-core-interface
   PUBLIC
+    ace
     boost
     fmt
-    ace
     g3dlib
     Detour
     sfmt

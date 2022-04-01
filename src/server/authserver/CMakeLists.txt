@@ -44,9 +44,13 @@ target_link_libraries(authserver
   PRIVATE
     trinity-core-interface
   PUBLIC
+    common
     shared
-	ace
-	)
+    game
+    threads
+    openssl
+    mysql
+    ace)
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}

@@ -12,6 +12,7 @@
 add_subdirectory(threads)
 
 if(SERVERS OR TOOLS)
+  add_subdirectory(acelite)
   add_subdirectory(boost)
   add_subdirectory(process)
   add_subdirectory(zlib)
@@ -23,12 +24,6 @@ if(SERVERS OR TOOLS)
   add_subdirectory(valgrind)
   add_subdirectory(openssl)
   add_subdirectory(jemalloc)
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  if(SERVERS)
-    add_subdirectory(acelite)
-  endif()
 endif()
 
 if(SERVERS)

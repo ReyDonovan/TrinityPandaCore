@@ -107,7 +107,6 @@ CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters_mop"
 #        Default:     1 - (LoginDatabase.WorkerThreads)
 #                     1 - (WorldDatabase.WorkerThreads)
 #                     1 - (CharacterDatabase.WorkerThreads)
-#                     1 - (FusionCMSDatabase.WorkerThreads)
 
 LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1

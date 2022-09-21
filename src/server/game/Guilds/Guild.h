@@ -286,7 +286,7 @@ struct GuildReward
     uint8 Standing;
 };
 
-uint32 const MinNewsItemLevel[MAX_CONTENT] = { 61, 90, 200, 353 };
+uint32 const MinNewsItemLevel[MAX_CONTENT] = { 61, 90, 200, 353, 463 };
 
 // Emblem info
 class EmblemInfo

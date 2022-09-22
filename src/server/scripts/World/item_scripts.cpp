@@ -445,6 +445,44 @@ class item_unhatched_jubling_egg : public ItemScript
         }
 };
 
+/*######
+# item_frans_watering_can
+# For quest 30050 (Gardener Fran and the Watering Can)
+# SD: 100%
+######*/
+
+class item_frans_watering_can : public ItemScript
+{
+public:
+	item_frans_watering_can() : ItemScript("item_frans_watering_can") { }
+
+	enum eMisc
+	{
+		QUEST_GARDENER_FRAN_AND_THE_WATERING_CAN = 30050,
+		NPC_WATERING_CAN_CREDIT = 57284
+	};
+
+	bool OnUse(Player* player, Item* item, const SpellCastTargets& /*targets*/)
+	{
+		if (player->GetQuestStatus(eMisc::QUEST_GARDENER_FRAN_AND_THE_WATERING_CAN) == QUEST_STATUS_INCOMPLETE)
+		{
+			if (Creature * qCredit = player->FindNearestCreature(eMisc::NPC_WATERING_CAN_CREDIT, 5.0f))
+			{
+				player->KilledMonsterCredit(eMisc::NPC_WATERING_CAN_CREDIT, 0);
+				qCredit->ForcedDespawn();
+
+				return true;
+			}
+			else
+				player->SendEquipError(EQUIP_ERR_OUT_OF_RANGE, item, NULL);
+		}
+		else
+			player->SendEquipError(EQUIP_ERR_CLIENT_LOCKED_OUT, item, NULL);
+
+		return true;
+	}
+};
+
 void AddSC_item_scripts()
 {
     new item_only_for_flight();
@@ -460,4 +498,5 @@ void AddSC_item_scripts()
     new item_captured_frog();
     new item_primal_egg();
     new item_unhatched_jubling_egg();
+    new item_frans_watering_can();
 }

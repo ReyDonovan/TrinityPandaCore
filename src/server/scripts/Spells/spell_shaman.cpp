@@ -205,9 +205,17 @@ class spell_sha_hex : public SpellScriptLoader
                 }
             }
 
+            void HandleProc(ProcEventInfo& event)
+			{
+				if (Unit* target = event.GetActionTarget())
+					if (target->HasAura(51514))
+						target->RemoveAura(51514);
+			}
+
             void Register() override
             {
                 OnEffectApply += AuraEffectApplyFn(spell_sha_hex_AuraScript::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+                OnProc += AuraProcFn(spell_sha_hex_AuraScript::HandleProc);
             }
         };
 

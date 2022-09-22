@@ -771,7 +771,7 @@ struct npc_brawlers_guild_bizmo : public ScriptedAI
                         else
                             DoAction(ACTION_WIPE);
                     }
-                    else if (currentRep <= 6750) // temp, now available only 7 ranks
+                    else if (currentRep) /// old code limit of ranks ((else if (currentRep <= 6750)) temp, now available only 7 ranks) Sargero
                     {
                         auto&& encounter = reputationEncounterType.find(currentRep);
 
@@ -1195,7 +1195,7 @@ struct npc_brawlers_guild_boss_bazzelflange : public ScriptedAI
                         else
                             DoAction(ACTION_WIPE);
                     }
-                    else if (currentRep <= 6750) // temp, now available only 7 ranks
+                    else if (currentRep) /// old code limit of ranks ((else if (currentRep <= 6750)) temp, now available only 7 ranks) Sargero
                     {
                         auto&& encounter = reputationEncounterType.find(currentRep);
 

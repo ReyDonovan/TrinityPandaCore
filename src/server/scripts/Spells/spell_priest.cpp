@@ -2487,6 +2487,16 @@ class spell_pri_spectral_guise_remove : public AuraScript
 {
     PrepareAuraScript(spell_pri_spectral_guise_remove);
 
+    bool CheckProc(ProcEventInfo& /*eventInfo*/)
+	{
+		std::list<TempSummon*> summons;
+		GetUnitOwner()->GetSummons(summons, 59607);
+		if (!summons.empty())
+			if (summons.front()->IsAlive())
+				return false;
+
+		return true;
+	}
 
     void HandleRemove(AuraEffect const*, AuraEffectHandleModes)
     {
@@ -2498,6 +2508,7 @@ class spell_pri_spectral_guise_remove : public AuraScript
 
     void Register() override
     {
+        DoCheckProc += AuraCheckProcFn(spell_pri_spectral_guise_remove::CheckProc);
         OnEffectRemove += AuraEffectRemoveFn(spell_pri_spectral_guise_remove::HandleRemove, EFFECT_0, SPELL_AURA_MOD_STEALTH, AURA_EFFECT_HANDLE_REAL);
     }
 };

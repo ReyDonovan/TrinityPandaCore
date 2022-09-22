@@ -24,6 +24,7 @@ enum eCreatures
     NPC_SUNA_SILENTSTRIKE       = 60901,
     NPC_MIST_SHAMANS_TORCH      = 60698,
     NPC_SUNA_SILENTSTRIKE_2     = 61055,
+    NPC_WILD_TOWNLONG_YAK       = 61635
 };
 
 enum eMisc
@@ -40,6 +41,12 @@ enum eLithIkSpells
     SPELL_TORNADO          = 125398,
     SPELL_TORNADO_DMG      = 131693,
     SPELL_WINDSONG         = 125373,
+    SPELL_YAK_LASSO        = 120084,
+    SPELL_STABBY           = 131911,
+    SPELL_MEAN             = 131899,
+    SPELL_SMELLY           = 131909,
+    SPELL_ANGRY            = 131910,
+    SPELL_MEAN_SMELLY_ANGRY_STABBY = 131920,
 };
 
 enum eLithIkEvents
@@ -1811,6 +1818,92 @@ class spell_townlong_shado_pan_spike_trap_eff : public SpellScript
     }
 };
 
+struct npc_wild_townlong_yak_61635 : public ScriptedAI
+{
+	npc_wild_townlong_yak_61635(Creature* creature) : ScriptedAI(creature) { }
+
+	void SpellHit(Unit* caster, const SpellInfo* spell) override
+	{
+		if (spell->Id == SPELL_YAK_LASSO)
+		{
+			if (uint8 rand = urand(0, 5))
+				CastRandom(rand, caster);
+		}
+	}
+
+	void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+	{
+		if (me->GetHealthPct() <= 15.0f || damage > me->GetHealth())
+		{
+			me->setFaction(35);
+			me->GetMotionMaster()->MoveRandom(20.0f);
+
+			if (me->HasAura(SPELL_MEAN))
+				me->RemoveAurasDueToSpell(SPELL_MEAN);
+
+			if (me->HasAura(SPELL_ANGRY))
+				me->RemoveAurasDueToSpell(SPELL_ANGRY);
+
+			if (me->HasAura(SPELL_SMELLY))
+				me->RemoveAurasDueToSpell(SPELL_SMELLY);
+
+			if (me->HasAura(SPELL_STABBY))
+				me->RemoveAurasDueToSpell(SPELL_STABBY);
+
+			if (me->HasAura(SPELL_MEAN_SMELLY_ANGRY_STABBY))
+				me->RemoveAurasDueToSpell(SPELL_MEAN_SMELLY_ANGRY_STABBY);
+
+			me->DespawnOrUnsummon(5000);
+		}
+	}
+
+	void CastRandom(uint8 spell, Unit* caster)
+	{
+		switch (spell)
+		{
+		case 0:
+			me->AddAura(SPELL_STABBY,me);
+			me->setFaction(15);
+			me->AI()->AttackStart(caster);
+
+			break;
+		case 1:
+			me->AddAura(SPELL_ANGRY, me);
+			me->setFaction(15);
+			me->AI()->AttackStart(caster);
+
+			break;
+		case 2:
+			me->AddAura(SPELL_MEAN, me);
+			me->setFaction(15);
+			me->AI()->AttackStart(caster);
+
+			break;
+		case 3:
+			me->AddAura(SPELL_SMELLY, me);
+			me->setFaction(15);
+			me->AI()->AttackStart(caster);
+
+			break;
+		case 4:
+			me->AddAura(SPELL_MEAN_SMELLY_ANGRY_STABBY, me);
+			me->setFaction(15);
+			me->AI()->AttackStart(caster);
+
+			break;
+		case 5:
+			me->GetMotionMaster()->MoveFollow(caster, PET_FOLLOW_DIST, M_PI);
+			caster->ToPlayer()->KilledMonsterCredit(61664);
+			me->DespawnOrUnsummon(10000);
+
+			break;
+		default:
+			break;
+		}
+
+	}
+};
+
 void AddSC_townlong_steppes()
 {
     // Rare mobs
@@ -1820,6 +1913,7 @@ void AddSC_townlong_steppes()
     new creature_script<npc_norlaxx>("npc_norlaxx");
     new creature_script<npc_siltriss_sharpener>("npc_siltriss_sharpener");
     new creature_script<npc_yul_wildpaw>("npc_yul_wildpaw");
+    new creature_script<npc_wild_townlong_yak_61635>("npc_wild_townlong_yak_61635");
     // Elite mobs
     new npc_darkwoods_faerie();
     new npc_hei_feng();

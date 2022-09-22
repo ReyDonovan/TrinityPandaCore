@@ -48,6 +48,8 @@ enum Spells
     SPELL_PROWL                       = 8152,
     SPELL_FEROCIOUS_CLAW              = 115083,
     SPELL_POUNCE                      = 116273,
+    SPELL_CALL_OF_THE_SPIRITSAGE	  = 104596,
+    SPELL_LI_LIS_DAY_OFF_SUMMON_LI_LI = 106276,
 };
 
 enum eEvents
@@ -75,6 +77,7 @@ enum Creatures
     NPC_STONE_1_CREDIT        = 63235,
     NPC_STONE_2_CREDIT        = 63236,
     NPC_STONE_3_CREDIT        = 63237,
+    NPC_WAYWARD_ANCESTOR	  = 55290,
 };
 
 enum Quests
@@ -86,6 +89,7 @@ enum Quests
     QUEST_A_STRONG_BACK         = 29628,
     QUEST_STAY_AND_WHILE        = 31121,
     QUEST_IF_STONES_COULD_SPEAK = 31134,
+    QUEST_THE_WAYWARD_DEAD		= 29752,
 };
 
 enum eTalks
@@ -2779,16 +2783,19 @@ struct npc_windward_hatchling : public ScriptedAI
     void SpellHit(Unit* caster, SpellInfo const* spell) override
     {
         auto player = caster->ToPlayer();
-        if (spell->Id == SPELL_SILKEN_ROPE && player && player->GetQuestStatus(QUEST_EMPTY_NESTS) == QUEST_STATUS_INCOMPLETE)
+        if (spell->Id == SPELL_SILKEN_ROPE && player)
         {
-            if (auto summon = player->SummonCreature(NPC_WINDWARD_HATCHLING, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 300000))
+            if (player->GetQuestStatus(QUEST_EMPTY_NESTS) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(30157) == QUEST_STATUS_INCOMPLETE)
             {
-                summon->SetOwnerGUID(player->GetGUID());
-                summon->SetDisplayId(me->GetDisplayId());
-                summon->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, M_PI);
-                summon->CastSpell(player, SPELL_ROPE_BEAM, true);
-                summon->ClearUnitState(UNIT_STATE_CASTING); // Allows move
-                me->DespawnOrUnsummon();
+            	if (auto summon = player->SummonCreature(NPC_WINDWARD_HATCHLING, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 300000))
+            	{
+            		summon->SetOwnerGUID(player->GetGUID());
+            		summon->SetDisplayId(me->GetDisplayId());
+            		summon->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, M_PI);
+            		summon->CastSpell(player, SPELL_ROPE_BEAM, true);
+            		summon->ClearUnitState(UNIT_STATE_CASTING); // Allows move
+            		me->DespawnOrUnsummon();
+            	}
             }
         }
     }
@@ -2881,60 +2888,6 @@ class npc_instructor_skythorn : public CreatureScript
         CreatureAI* GetAI(Creature* creature) const override
         {
             return new npc_instructor_skythornAI(creature);
-        }
-};
-
-class npc_the_pearlfin_situation_q : public CreatureScript
-{
-    public:
-        npc_the_pearlfin_situation_q() : CreatureScript("npc_the_pearlfin_situation_q") { }
-
-        bool OnGossipHello(Player* player, Creature* creature) override
-        {
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID());
-
-            if (creature->IsVendor())
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
-
-            if (player->GetQuestStatus(29883) == QUEST_STATUS_INCOMPLETE)
-            {
-                std::string gossip = "";
-                switch (creature->GetEntry())
-                {
-                case 59058:
-                    gossip = "Please allow us a chance to prove our friendship. We wish you no harm";
-                    break;
-                case 56693:
-                    gossip = "What are you doing?";
-                    break;
-                case 56690:
-                    gossip = "My friends and I come with peaceful intentions.";
-                    break;
-                case 54960:
-                    gossip = "I come from the Alliance. We wish to be allies, not enemies.";
-                    break;
-                }
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, gossip, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            }
-
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-            return true;
-        }
-
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-        {
-            player->PlayerTalkClass->ClearMenus();
-            if (action == GOSSIP_ACTION_INFO_DEF + 1)
-            {
-                creature->AI()->Talk(0);
-                player->KilledMonsterCredit(creature->GetEntry());
-                player->CLOSE_GOSSIP_MENU();
-            }
-            else if (action == GOSSIP_ACTION_TRADE)
-                player->GetSession()->SendListInventory(creature->GetGUID());
-
-            return false;
         }
 };
 
@@ -3909,7 +3862,7 @@ class npc_prince_anduin_decision_questgiver : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            if (player->GetQuestStatus(QUEST_ANDUIN_DECISION) != QUEST_STATUS_INCOMPLETE || creature->GetPositionZ() < 85.0f)
+            if (player->GetQuestStatus(QUEST_ANDUIN_DECISION) != QUEST_STATUS_INCOMPLETE)
                 return false;
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "It is time to go home, Prince Anduin.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); // miss gossip_menu_id
@@ -4828,6 +4781,122 @@ class spell_reverse_cast_ride_seat_1 : public SpellScript
     }
 };
 
+// Wayward Ancestor 55290
+struct npc_wayward_ancestor : public ScriptedAI
+{
+	npc_wayward_ancestor(Creature* creature) : ScriptedAI(creature) { }
+
+	void SpellHit(Unit* caster, SpellInfo const* spell)
+	{
+		if (spell->Id == SPELL_CALL_OF_THE_SPIRITSAGE && caster->GetTypeId() == TYPEID_PLAYER)
+			me->m_Events.Schedule(3000, [this, caster]() 
+			{ 
+				caster->ToPlayer()->KilledMonsterCredit(61290);
+				me->DespawnOrUnsummon();
+			});
+	}
+};
+
+// 106276 Li Li's Day Off: Summon Li Li
+class spell_summon_li_li : public SpellScript
+{
+	PrepareSpellScript(spell_summon_li_li);
+
+	SpellCastResult CheckCast()
+	{
+		Unit* caster = GetCaster();
+
+		if (!caster)
+			return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+		for (auto summon : GetCaster()->GetSummons())
+			if (summon->IsAlive() && summon->GetDistance(GetCaster()->GetPosition()) > 15.0f)
+				summon->DespawnOrUnsummon();
+			else continue;
+
+		if (!caster->FindNearestCreature(56549, 15.0f, true))
+			return SPELL_CAST_OK;
+
+		return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+	}
+
+	void Register() override
+	{
+		OnCheckCast += SpellCheckCastFn(spell_summon_li_li::CheckCast);
+	}
+};
+
+// 56549 Li Li's Day Off
+struct npc_day_off_li_li : public ScriptedAI
+{
+	npc_day_off_li_li(Creature* creature) : ScriptedAI(creature) { }
+
+	void IsSummonedBy(Unit* summoner)
+	{ 
+		if (summoner->GetTypeId() == TYPEID_PLAYER)
+			me->GetMotionMaster()->MoveFollow(summoner, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+	}
+
+	void UpdateAI(uint32 diff) override
+	{
+		if (me->GetAreaId() == 6021)
+		{
+			me->ToTempSummon()->GetSummoner()->ToPlayer()->KilledMonsterCredit(56548);
+			if (!text1)
+			{
+				me->AI()->Talk(2);
+				text1 = true;
+			}
+		}
+
+		if (me->GetAreaId() == 5986)
+		{
+			me->ToTempSummon()->GetSummoner()->ToPlayer()->KilledMonsterCredit(56546);
+			if (!text2)
+			{
+				me->AI()->Talk(0);
+				text2 = true;
+			}
+		}
+
+		if (me->GetAreaId() == 5973)
+		{
+			me->ToTempSummon()->GetSummoner()->ToPlayer()->KilledMonsterCredit(56547);
+			if (!text3)
+			{
+				me->AI()->Talk(1);
+				text3 = true;
+			}
+		}
+
+	}
+
+	bool text1 = false, text2 = false, text3 = false;
+};
+
+// 62377 Gardener Fran
+struct npc_gardener_fran : public ScriptedAI
+{
+	npc_gardener_fran(Creature* creature) : ScriptedAI(creature) { }
+
+	void sGossipSelect(Player* player, uint32 menuId, uint32 /*action*/) override
+	{
+		if (player->GetQuestStatus(30053) == QUEST_STATUS_INCOMPLETE)
+			if (menuId == 13850)
+			{
+				player->KilledMonsterCredit(62377);
+				if (!talk)
+				{
+					me->AI()->Talk(0);
+					talk = true;
+				}
+			}
+	}
+
+	bool talk = false;
+};
+
 void AddSC_jade_forest()
 {
     // Rare mobs
@@ -4873,12 +4942,14 @@ void AddSC_jade_forest()
     new creature_script<npc_slitherscale_lizard_lord>("npc_slitherscale_lizard_lord");
     new creature_script<npc_shadowfae_trickster>("npc_shadowfae_trickster");
     new creature_script<npc_thunderfist_gorilla>("npc_thunderfist_gorilla");
+    new creature_script<npc_wayward_ancestor>("npc_wayward_ancestor");
+    new creature_script<npc_day_off_li_li>("npc_day_off_li_li");
+    new creature_script<npc_gardener_fran>("npc_gardener_fran");
     // Quest scripts
     new npc_nectarbreeze_farmer();
     new creature_script<npc_windward_hatchling>("npc_windward_hatchling");
     new creature_script<npc_windward_nest_trigger>("npc_windward_nest_trigger");
     new npc_instructor_skythorn();
-    new npc_the_pearlfin_situation_q();
     new AreaTrigger_q29586();
     new spell_q30063();
     new spell_q29637();
@@ -4920,4 +4991,5 @@ void AddSC_jade_forest()
     new creature_script<npc_jade_forest_instant_message_camera_bunny>("npc_jade_forest_instant_message_camera_bunny");
     new aura_script<spell_jade_forest_signal_flare_initialize>("spell_jade_forest_signal_flare_initialize");
     new spell_script<spell_reverse_cast_ride_seat_1>("spell_reverse_cast_ride_seat_1");
+    new spell_script<spell_summon_li_li>("spell_summon_li_li");
 }

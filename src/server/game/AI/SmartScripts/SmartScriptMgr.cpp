@@ -1098,6 +1098,15 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_QUEST_COMPLETE:
+		{
+            for (auto& questID : e.action.CompleteQuest.quest)
+            {
+                if (questID && !IsQuestValid(e, questID))
+                    questID = 0;
+            }
+            break;
+		}
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:

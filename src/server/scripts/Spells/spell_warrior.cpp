@@ -115,6 +115,7 @@ enum WarriorSpells
     SPELL_WARRIOR_SLAM                          = 1464,
     SPELL_WARRIOR_SLAM_PROC                     = 146361,
     SPELL_WARRIOR_GLYPH_OF_THE_BLAZING_TRAIL    = 123779,
+    SPELL_UNBRIDLED_WRATH                       = 143268,
 
     SPELL_WEAKENED_ARMOR                        = 113746,
     SPELL_PHYSICAL_VULNERABILITY                = 81326,
@@ -330,15 +331,10 @@ class spell_warr_unbridled_wrath : public SpellScriptLoader
 
             bool checkProc(ProcEventInfo& eventInfo)
             {
-				if (GetCaster()->HasSpell(143268))
-					if (GetCaster()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED))
-                        return true;
-                return false;
-
-				if (GetCaster()->HasSpell(143268))
-				       if (GetCaster()->HasAuraType(SPELL_AURA_MOD_ROOT))
-						   return true;
-                return false;
+                if (GetCaster()->HasSpell(SPELL_UNBRIDLED_WRATH))
+					if (GetCaster()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED) || GetCaster()->HasAuraType(SPELL_AURA_MOD_ROOT))
+						return true;
+				return false;
             }
 
             void onProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)

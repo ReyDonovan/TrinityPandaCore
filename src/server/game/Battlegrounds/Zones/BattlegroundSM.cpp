@@ -302,7 +302,7 @@ void BattlegroundSM::FirstMineCartSummon(uint32 /*diff*/)
             mineCart->CastSpell(mineCart, BG_SM_CONTROL_VISUAL_NEUTRAL, true);
             mineCart->SetUnitMovementFlags(MOVEMENTFLAG_BACKWARD);
             mineCart->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            mineCart->SetSpeed(MOVE_WALK, 0.8f);
+            mineCart->SetSpeed(MOVE_WALK, 0.4f);
             m_mineCartsProgressBar[cart] = BG_SM_PROGRESS_BAR_NEUTRAL;
             CartSpawned(BG_SM_MineCarts(cart));
         }
@@ -332,7 +332,7 @@ void BattlegroundSM::SummonMineCart(uint32 /*diff*/)
                 mineCart->CastSpell(mineCart, BG_SM_CONTROL_VISUAL_NEUTRAL, true);
                 mineCart->SetUnitMovementFlags(MOVEMENTFLAG_BACKWARD);
                 mineCart->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                mineCart->SetSpeed(MOVE_WALK, 0.8f);
+                mineCart->SetSpeed(MOVE_WALK, 0.4f);
                 m_mineCartsProgressBar[i] = BG_SM_PROGRESS_BAR_NEUTRAL;
                 SendMessageToAll(LANG_BG_SM_MINE_CART_SPAWNED, CHAT_MSG_BG_SYSTEM_NEUTRAL);
                 PlaySoundToAll(BG_SM_SOUND_MINE_CART_SPAWNED);

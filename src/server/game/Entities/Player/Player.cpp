@@ -16868,12 +16868,15 @@ bool Player::CanRewardQuest(Quest const* quest, uint32 reward, bool msg)
 
     if (count)
     {
-        ItemPosCountVec dest;
-        InventoryResult res = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, reward, count);
-        if (res != EQUIP_ERR_OK)
+        if (reward)
         {
-            SendEquipError(res, NULL, NULL, reward);
-            return false;
+            ItemPosCountVec dest;
+            InventoryResult res = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, reward, count);
+            if (res != EQUIP_ERR_OK)
+            {
+                SendEquipError(res, NULL, NULL, reward);
+                return false;
+            }
         }
     }
 

@@ -234,6 +234,13 @@ class spell_warr_storm_bolt : public SpellScript
 
     void HandleLaunch(SpellEffIndex)
     {
+        //If hunter has Deterrance, ignore it.
+        if (Unit* target = GetHitUnit())
+        {
+            if (target->HasAura(19263))
+                return;
+        }
+
         // Launch doesn't called if spell won't hit target
         GetCaster()->CastSpell(GetHitUnit(), WARRIOR_SPELL_STORM_BOLT_STUN, true);
     }

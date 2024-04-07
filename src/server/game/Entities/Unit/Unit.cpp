@@ -196,7 +196,7 @@ i_AI(NULL), i_disabledAI(NULL), m_AutoRepeatFirstCast(false), m_procDeep(0),
 m_removedAurasCount(0), i_motionMaster(new MotionMaster(this)), m_ThreatManager(this),
 m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE),
 m_HostileRefManager(this),
-_aiAnimKitId(0), _movementAnimKitId(0), _meleeAnimKitId(0)
+_aiAnimKitId(0), _movementAnimKitId(0), _meleeAnimKitId(0), _scheduler(this)
 {
 #ifdef _MSC_VER
 #pragma warning(default:4355)
@@ -336,6 +336,8 @@ Unit::~Unit()
             m_currentSpells [i] = NULL;
         }
 
+    _scheduler.CancelAll();
+
     _DeleteRemovedAuras();
 
     delete i_motionMaster;
@@ -360,6 +362,8 @@ void Unit::Update(uint32 p_time)
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
     m_Events.Update(p_time);
+
+    _scheduler.Update(p_time);
 
     UpdateStealthVisibility(p_time);
 
@@ -16103,6 +16107,8 @@ void Unit::Kill(Unit* victim, bool durabilityLoss, SpellInfo const* spellInfo)
         if (Player* killed = victim->ToPlayer())
             sScriptMgr->OnPlayerKilledByCreature(killerCre, killed);
     }
+
+    GetScheduler().CancelAll();
 }
 
 float Unit::GetPositionZMinusOffset() const

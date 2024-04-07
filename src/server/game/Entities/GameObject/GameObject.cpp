@@ -40,7 +40,7 @@
 #include <G3D/CoordinateFrame.h>
 
 GameObject::GameObject() : WorldObject(false), MapObject(),
-    m_model(NULL), m_goValue(), m_AI(NULL), _animKitId(0)
+    m_model(NULL), m_goValue(), m_AI(NULL), _animKitId(0), _scheduler(this)
 {
     m_objectType |= TYPEMASK_GAMEOBJECT;
     m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -117,6 +117,8 @@ void GameObject::CleanupsBeforeDelete(bool finalCleanup)
 
     if (m_uint32Values)                                      // field array can be not exist if GameOBject not loaded
         RemoveFromOwner();
+
+    _scheduler.CancelAll();
 }
 
 void GameObject::RemoveFromOwner()
@@ -346,6 +348,7 @@ void GameObject::Update(uint32 diff)
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
     m_Events.Update(diff);
+    _scheduler.Update(diff);
 
     UpdateStealthVisibility(diff);
 

@@ -27,6 +27,7 @@
 #include "LootMgr.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
+#include "TaskScheduler.h"
 
 class GameObjectAI;
 class Group;
@@ -1036,6 +1037,8 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Map
         // Event handler
         EventProcessor m_Events;
 
+        TaskScheduler& GetScheduler() { return _scheduler; }
+
     protected:
         bool AIM_Initialize();
         void UpdateModel();                                 // updates model in case displayId were changed
@@ -1084,6 +1087,8 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Map
         }
         GameObjectAI* m_AI;
         uint16 _animKitId;
+
+        TaskScheduler _scheduler;
 };
 
 class ForcedGoDespawnDelayEvent : public BasicEvent

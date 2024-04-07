@@ -31,6 +31,7 @@
 #include "ThreatManager.h"
 #include "MoveSplineInit.h"
 #include "SpellMgr.h"
+#include "TaskScheduler.h"
 #include "TimeValue.h"
 #include "SpellInfo.h"
 #include <array>
@@ -3020,6 +3021,8 @@ public:
 
     SpellHistory* GetSpellHistory() const { return m_spellHistory.get(); }
 
+    TaskScheduler& GetScheduler() { return _scheduler; }
+
     float GetScallingDamageMod() const;
 
     bool PetNeedsLOSCheckOnAttackStart() const;
@@ -3158,6 +3161,8 @@ protected:
     uint32 m_comboPointResetTimer = 0;
 
     std::unique_ptr<SpellHistory> m_spellHistory;
+
+    TaskScheduler _scheduler;
 
     RedirectThreatInfo _redirectThreatInfo;
 

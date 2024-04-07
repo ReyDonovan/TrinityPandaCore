@@ -17,7 +17,7 @@ Detailed installation guides are available in the wiki for
 
 
 ## Copyright
-License: GPL 3.0
+License: GPL 2.0
 
 Read file [COPYING](COPYING.md)
 

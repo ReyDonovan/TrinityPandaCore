@@ -108,9 +108,8 @@ char const* CONF_mpq_list[] =
 uint32 const Builds[] = {16016, 16048, 16057, 16309, 16357, 16516, 16650, 16844, 16965, 17116, 17266, 17325, 17345, 17538, 17645, 17688, 17898, 18273};
 //#define LAST_DBC_IN_DATA_BUILD 13623    // after this build mpqs with dbc are back to locale folder
 #define NEW_BASE_SET_BUILD  15211
-#define LOCALES_COUNT 15
 
-char const* Locales[LOCALES_COUNT] =
+char const* Locales[] =
 {
     "enGB", "enUS",
     "deDE", "esES",
@@ -122,7 +121,7 @@ char const* Locales[LOCALES_COUNT] =
     "itIT",
 };
 
-TCHAR const* LocalesT[LOCALES_COUNT] =
+TCHAR const* LocalesT[] =
 {
     _T("enGB"), _T("enUS"),
     _T("deDE"), _T("esES"),
@@ -133,6 +132,8 @@ TCHAR const* LocalesT[LOCALES_COUNT] =
     _T("ptBR"), _T("ptPT"),
     _T("itIT"),
 };
+
+#define LOCALES_COUNT 15
 
 void CreateDir(std::string const& path)
 {

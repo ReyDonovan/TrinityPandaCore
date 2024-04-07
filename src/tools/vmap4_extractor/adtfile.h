@@ -23,7 +23,6 @@
 #include "mpqfile.h"
 #include "wmo.h"
 #include "model.h"
-#include <vector>
 
 #define TILESIZE (533.33333f)
 #define CHUNKSIZE ((TILESIZE) / 16.0f)
@@ -121,8 +120,8 @@ public:
     ~ADTFile();
     int nWMO;
     int nMDX;
-    std::vector<std::string> WmoInstanceNames;
-    std::vector<std::string> ModelInstanceNames;
+    std::string* WmoInstanceNames;
+    std::string* ModelInstanceNames;
     bool init(uint32 map_num, uint32 tileX, uint32 tileY);
     //void LoadMapChunks();
 

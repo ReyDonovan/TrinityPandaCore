@@ -33,7 +33,7 @@ char * wdtGetPlainName(char * FileName)
 
 extern HANDLE WorldMpq;
 
-WDTFile::WDTFile(char* file_name, char* file_name1):WDT(WorldMpq, file_name), gnWMO(0)
+WDTFile::WDTFile(char* file_name, char* file_name1):WDT(WorldMpq, file_name)
 {
     filename.append(file_name1,strlen(file_name1));
 }
@@ -78,13 +78,15 @@ bool WDTFile::init(char* /*map_id*/, unsigned int mapID)
             {
                 char *buf = new char[size];
                 WDT.read(buf, size);
-                char *p = buf;
+                char *p=buf;
+                int q = 0;
+                gWmoInstansName = new string[size];
                 while (p < buf + size)
                 {
                     char* s=wdtGetPlainName(p);
                     FixNameCase(s,strlen(s));
                     p=p+strlen(p)+1;
-                    gWmoInstansName.push_back(s);
+                    gWmoInstansName[q++] = s;
                 }
                 delete[] buf;
             }
@@ -102,6 +104,8 @@ bool WDTFile::init(char* /*map_id*/, unsigned int mapID)
                     WDT.read(&id, 4);
                     WMOInstance inst(WDT,gWmoInstansName[id].c_str(), mapID, 65, 65, dirfile);
                 }
+
+                delete[] gWmoInstansName;
             }
         }
         WDT.seek((int)nextpos);

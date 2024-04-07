@@ -16,53 +16,23 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifdef _WIN32
-  #include "direct.h"
-#endif
-
+ 
 #include <string>
 #include <iostream>
 
 #include "TileAssembler.h"
 
-void CreateDir(std::string const& path)
-{
-    if (chdir(path.c_str()) == 0)
-    {
-        chdir("../");
-        return;
-    }
-
-#ifdef _WIN32
-    _mkdir(path.c_str());
-#else
-    mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IRWXO); // 0777
-#endif
-}
-
 int main(int argc, char* argv[])
 {
-    std::string src = "Buildings";
-    std::string dest = "vmaps";
-
-    std::string path = "./" + dest + "/";
-    
-    CreateDir(path);
-
-    if(argc > 3)
+    if(argc != 3)
     {
         //printf("\nusage: %s <raw data dir> <vmap dest dir> [config file name]\n", argv[0]);
         std::cout << "usage: " << argv[0] << " <raw data dir> <vmap dest dir>" << std::endl;
         return 1;
     }
-    else
-    {
-        if (argc > 1)
-            src = argv[1];
-        if (argc > 2)
-            dest = argv[2];
-    }
+
+    std::string src = argv[1];
+    std::string dest = argv[2];
 
     std::cout << "using " << src << " as source directory and writing output to " << dest << std::endl;
 

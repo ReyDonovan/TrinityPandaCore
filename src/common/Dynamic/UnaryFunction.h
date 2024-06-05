@@ -15,7 +15,6 @@
 #ifndef TRINITY_UNARY_FUNCTION_H
 #define TRINITY_UNARY_FUNCTION_H
 
-#if COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1910 && _HAS_CXX17
 template<class ArgumentType, class ResultType>
 struct unary_function
 {
@@ -24,8 +23,5 @@ struct unary_function
 };
 
 #define TC_UNARY_FUNCTION unary_function
-#else 
-#define TC_UNARY_FUNCTION std::unary_function
-#endif 
 
 #endif

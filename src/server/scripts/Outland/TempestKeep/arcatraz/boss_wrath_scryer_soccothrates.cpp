@@ -248,7 +248,7 @@ class boss_wrath_scryer_soccothrates : public CreatureScript
             }
 
             private:
-                struct FelrushPredicate : public std::unary_function<Unit*, bool>
+                struct FelrushPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
                 {
                     public:
                         FelrushPredicate(Creature const* me) : _me(me) { }

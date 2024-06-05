@@ -183,7 +183,7 @@ class boss_echo_of_baine : public CreatureScript
             }
 
         private:
-            struct PositionSelector : public std::unary_function<Unit*, bool>
+            struct PositionSelector : public TC_UNARY_FUNCTION<Unit*, bool>
             {
                 public:
                     //PositionSelector(bool b) : _b(b) { }

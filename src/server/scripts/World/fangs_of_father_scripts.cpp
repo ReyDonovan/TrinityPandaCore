@@ -240,7 +240,7 @@ class npc_lord_hiram_creed : public CreatureScript
             bool bDragon;
             EventMap events;
 
-            struct PlayerClassSelector : public std::unary_function<Unit*, bool>
+            struct PlayerClassSelector : public TC_UNARY_FUNCTION<Unit*, bool>
             {
                 public:
                     PlayerClassSelector() {}

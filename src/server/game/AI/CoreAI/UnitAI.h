@@ -23,6 +23,7 @@
 #include "Define.h"
 #include "Unit.h"
 #include "Containers.h"
+#include "UnaryFunction.h"
 #include <list>
 
 class Player;
@@ -41,7 +42,7 @@ enum SelectAggroTarget
 };
 
 // default predicate function to select target based on distance, player and/or aura criteria
-struct DefaultTargetSelector : public std::unary_function<Unit*, bool>
+struct DefaultTargetSelector : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     const Unit* me;
     float m_dist;
@@ -91,7 +92,7 @@ struct DefaultTargetSelector : public std::unary_function<Unit*, bool>
 
 // Target selector for spell casts checking range, auras and attributes
 /// @todo Add more checks from Spell::CheckCast
-struct SpellTargetSelector : public std::unary_function<Unit*, bool>
+struct SpellTargetSelector : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         SpellTargetSelector(Unit* caster, uint32 spellId);
@@ -105,7 +106,7 @@ struct SpellTargetSelector : public std::unary_function<Unit*, bool>
 // Very simple target selector, will just skip main target
 // NOTE: When passing to UnitAI::SelectTarget remember to use 0 as position for random selection
 //       because tank will not be in the temporary list
-struct NonTankTargetSelector : public std::unary_function<Unit*, bool>
+struct NonTankTargetSelector : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         NonTankTargetSelector(Creature* source, bool playerOnly = true) : _source(source), _playerOnly(playerOnly) { }
@@ -116,7 +117,7 @@ struct NonTankTargetSelector : public std::unary_function<Unit*, bool>
         bool _playerOnly;
 };
 
-struct CasterSpecTargetSelector :public std::unary_function<uint32, bool>
+struct CasterSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         CasterSpecTargetSelector(uint32 spellId = 0 ) : _spellId(spellId) { }
@@ -127,7 +128,7 @@ struct CasterSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct MeeleSpecTargetSelector :public std::unary_function<uint32, bool>
+struct MeeleSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         MeeleSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -138,7 +139,7 @@ struct MeeleSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct DpsSpecTargetSelector :public std::unary_function<uint32, bool>
+struct DpsSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         DpsSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -149,7 +150,7 @@ struct DpsSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct TankSpecTargetSelector :public std::unary_function<uint32, bool>
+struct TankSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         TankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -160,7 +161,7 @@ struct TankSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct HealerSpecTargetSelector :public std::unary_function<uint32, bool>
+struct HealerSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         HealerSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -171,7 +172,7 @@ struct HealerSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct NonTankSpecTargetSelector :public std::unary_function<uint32, bool>
+struct NonTankSpecTargetSelector :public TC_UNARY_FUNCTION<uint32, bool>
 {
     public:
         NonTankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -210,7 +211,7 @@ class UnitAI
 
         Unit* SelectTarget(SelectAggroTarget targetType, uint32 position = 0, float dist = 0.0f, bool playerOnly = false, int32 aura = 0);
         // Select the targets satifying the predicate.
-        // predicate shall extend std::unary_function<Unit*, bool>
+        // predicate shall extend TC_UNARY_FUNCTION<Unit*, bool>
         template <class PREDICATE> Unit* SelectTarget(SelectAggroTarget targetType, uint32 position, PREDICATE const& predicate)
         {
             ThreatContainer::StorageType const& threatlist = me->getThreatManager().getThreatList();
@@ -260,7 +261,7 @@ class UnitAI
         void SelectTargetList(std::list<Unit*>& targetList, uint32 num, SelectAggroTarget targetType, float dist = 0.0f, bool playerOnly = false, int32 aura = 0);
 
         // Select the targets satifying the predicate.
-        // predicate shall extend std::unary_function<Unit*, bool>
+        // predicate shall extend TC_UNARY_FUNCTION<Unit*, bool>
         template <class PREDICATE> void SelectTargetList(std::list<Unit*>& targetList, PREDICATE const& predicate, uint32 maxTargets, SelectAggroTarget targetType)
         {
             ThreatContainer::StorageType const& threatlist = me->getThreatManager().getThreatList();

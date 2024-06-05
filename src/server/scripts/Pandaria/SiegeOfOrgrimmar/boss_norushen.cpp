@@ -2024,7 +2024,7 @@ class spell_blind_hatred_periodic : public AuraScript
     }
 };
 
-class BlindHatredPredicate : public std::unary_function<Unit*, bool>
+class BlindHatredPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         BlindHatredPredicate(Unit* const m_caster) : _caster(m_caster) { }
@@ -2133,7 +2133,7 @@ class spell_manifestation_unleash_corruption : public SpellScript
 };
 
 // we should hit only our owner in same phase with another challengers
-class TrialPhasePredicate : public std::unary_function<Unit*, bool>
+class TrialPhasePredicate : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         TrialPhasePredicate(Creature* const m_caster) : _caster(m_caster) { }

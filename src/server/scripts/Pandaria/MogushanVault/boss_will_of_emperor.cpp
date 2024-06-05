@@ -1863,7 +1863,7 @@ class spell_titan_gas_players final : public SpellScript
     }
 };
 
-class EnergizingSmashPredicate : public std::unary_function<Unit*, bool>
+class EnergizingSmashPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         EnergizingSmashPredicate(Unit* const m_owner) : _owner(m_owner) { }

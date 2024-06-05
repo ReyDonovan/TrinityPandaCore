@@ -2517,7 +2517,7 @@ class spell_celestial_uninteractible_aura : public AuraScript
     }
 };
 
-class StarSequencePredicate : public std::unary_function<Creature*, bool>
+class StarSequencePredicate : public TC_UNARY_FUNCTION<Creature*, bool>
 {
     public:
         StarSequencePredicate(Creature* const m_caster) : _caster(m_caster) { }

@@ -3241,7 +3241,7 @@ class spell_soo_aim : public SpellScript
     }
 };
 
-class AimPredicate : public std::unary_function<Creature*, bool>
+class AimPredicate : public TC_UNARY_FUNCTION<Creature*, bool>
 {
     public:
         AimPredicate(Creature* const caster) : _caster(caster) { }

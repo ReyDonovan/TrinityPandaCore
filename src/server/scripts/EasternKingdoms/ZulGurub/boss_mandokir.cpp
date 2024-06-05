@@ -399,7 +399,7 @@ class npc_chained_spirit : public CreatureScript
         }
 };
 
-class DecapitatePredicate : public std::unary_function<Unit*, bool>
+class DecapitatePredicate : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         DecapitatePredicate(Unit* const m_caster) : _caster(m_caster) { }
@@ -511,7 +511,7 @@ class spell_mandokir_spirit_vengeance_cancel : public SpellScriptLoader
         }
 };
 
-class DevastatingSlamTargetSelector : public std::unary_function<Unit *, bool>
+class DevastatingSlamTargetSelector : public TC_UNARY_FUNCTION<Unit *, bool>
 {
     public:
         DevastatingSlamTargetSelector(Creature* me, const Unit* victim) : _me(me), _victim(victim) { }

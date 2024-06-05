@@ -170,7 +170,7 @@ class RisenArchmageCheck
         }
 };
 
-struct ManaVoidSelector : public std::unary_function<Unit*, bool>
+struct ManaVoidSelector : public TC_UNARY_FUNCTION<Unit*, bool>
 {
     public:
         explicit ManaVoidSelector(WorldObject const* source) : _source(source) { }

@@ -480,7 +480,7 @@ class npc_commander_lindon : public CreatureScript
                         itr->AI()->DoAction(action);
             }
 
-            struct ShieldBreakerPredicate : public std::unary_function<Unit*, bool>
+            struct ShieldBreakerPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
             {
                 public:
                     ShieldBreakerPredicate(Creature const* me) : _me(me) { }

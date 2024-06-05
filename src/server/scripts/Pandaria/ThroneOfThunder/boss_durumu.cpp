@@ -1887,7 +1887,7 @@ class spell_durumu_mind_daggers : public SpellScript
     }
 };
 
-class LifeDrainPredicate : public std::unary_function<Creature*, bool>
+class LifeDrainPredicate : public TC_UNARY_FUNCTION<Creature*, bool>
 {
     public:
         LifeDrainPredicate(Creature* const m_caster) : _caster(m_caster) { }

@@ -12,7 +12,6 @@
 add_subdirectory(threads)
 
 if(SERVERS OR TOOLS)
-  add_subdirectory(acelite)
   add_subdirectory(boost)
   add_subdirectory(process)
   add_subdirectory(zlib)
@@ -33,6 +32,12 @@ if(SERVERS)
 endif()
 
 if(TOOLS)
-  add_subdirectory(bzip2)
   add_subdirectory(StormLib)
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  add_subdirectory(acelite)
+  if(TOOLS)
+    add_subdirectory(bzip2)
+  endif()
 endif()

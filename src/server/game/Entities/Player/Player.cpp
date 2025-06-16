@@ -1428,11 +1428,8 @@ int32 Player::getMaxTimer(MirrorTimerType timer)
         {
             if (!IsAlive() || HasAuraType(SPELL_AURA_WATER_BREATHING) || GetSession()->GetSecurity() >= AccountTypes(sWorld->getIntConfig(CONFIG_DISABLE_BREATHING)))
                 return DISABLED_MIRROR_TIMER;
-            int32 UnderWaterTime = 3 * MINUTE * IN_MILLISECONDS;
-            AuraEffectList const& mModWaterBreathing = GetAuraEffectsByType(SPELL_AURA_MOD_WATER_BREATHING);
-            for (AuraEffectList::const_iterator i = mModWaterBreathing.begin(); i != mModWaterBreathing.end(); ++i)
-                AddPct(UnderWaterTime, (*i)->GetAmount());
-            return UnderWaterTime;
+
+            return (3 * MINUTE * IN_MILLISECONDS) * GetTotalAuraMultiplier(SPELL_AURA_MOD_WATER_BREATHING);
         }
         case FIRE_TIMER:
         {
@@ -3191,8 +3188,7 @@ GameObject* Player::GetGameObjectIfCanInteractWith(uint64 guid, GameobjectTypes 
 
 bool Player::IsUnderWater() const
 {
-    return IsInWater() &&
-        GetPositionZ() < (GetBaseMap()->GetWaterLevel(GetPositionX(), GetPositionY()) - GetCollisionHeight(IsMounted()));
+    return IsInWater() && GetPositionZ() < (GetMap()->GetWaterLevel(GetPositionX(), GetPositionY()) - 2);
 }
 
 void Player::SetInWater(bool apply)

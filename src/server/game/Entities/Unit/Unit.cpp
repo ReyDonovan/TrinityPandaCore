@@ -468,6 +468,7 @@ void Unit::Update(uint32 p_time)
 
     UpdateSplineMovement(p_time);
     GetMotionMaster()->UpdateMotion(p_time);
+    UpdateUnderwaterState(GetMap(), GetPositionX(), GetPositionY(), GetPositionZ());
 }
 
 void Unit::UpdateAttackTimer(WeaponAttackType type, uint32 diff)
@@ -3672,17 +3673,17 @@ bool Unit::isInAccessiblePlaceFor(Creature const* c) const
 
 bool Unit::IsInWater() const
 {
-    return GetBaseMap()->IsInWater(GetPositionX(), GetPositionY(), GetPositionZ(), NULL);
+    return GetBaseMap()->IsInWater(GetPositionX(), GetPositionY(), GetPositionZ());
 }
 
 bool Unit::IsUnderWater() const
 {
-    return GetBaseMap()->IsUnderWater(GetPositionX(), GetPositionY(), GetPositionZ(), NULL);
+    return GetBaseMap()->IsUnderWater(GetPositionX(), GetPositionY(), GetPositionZ());
 }
 
 void Unit::UpdateUnderwaterState(Map* m, float x, float y, float z)
 {
-    if (!IsPet() && !IsVehicle())
+    if (IsFlying() || (!IsPet() && !IsVehicle()))
         return;
 
     LiquidData liquid_status;

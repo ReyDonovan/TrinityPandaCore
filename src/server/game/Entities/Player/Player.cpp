@@ -16494,17 +16494,19 @@ void Player::SendPreparedQuest(uint64 guid)
                     return;
                 }
 
-                if (quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true))
+                if (object->GetTypeId() != TYPEID_UNIT || object->GetUInt64Value(UNIT_FIELD_NPC_FLAGS) & UNIT_NPC_FLAG_GOSSIP)
                 {
-                    AddQuest(quest, object);
-                    if (CanCompleteQuest(questId))
-                        CompleteQuest(questId);
-                }
+                    if (quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true))
+                        AddQuest(quest, object);
 
-                if (!sWorld->getBoolConfig(CONFIG_QUEST_IGNORE_AUTO_COMPLETE) && quest->GetQuestMethod() == 0 && quest->IsRepeatable() && !quest->IsDailyOrWeekly())
-                    PlayerTalkClass->SendQuestGiverRequestItems(quest, guid, CanCompleteRepeatableQuest(quest), true);
-                else
-                    PlayerTalkClass->SendQuestGiverQuestDetails(quest, guid, true);
+                    if (quest->IsAutoComplete() && quest->IsRepeatable() && !quest->IsDailyOrWeekly() && !quest->IsMonthly())
+                        PlayerTalkClass->SendQuestGiverRequestItems(quest, object->GetGUID(), CanCompleteRepeatableQuest(quest), true);
+                    else if (quest->IsAutoComplete() && !quest->IsDailyOrWeekly() && !quest->IsMonthly())
+                        PlayerTalkClass->SendQuestGiverRequestItems(quest, object->GetGUID(), CanRewardQuest(quest, false), true);
+                    else
+                        PlayerTalkClass->SendQuestGiverQuestDetails(quest, object->GetGUID(), true, false);
+                    return;
+                }
             }
         }
     }

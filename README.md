@@ -1,3 +1,9 @@
+## Build Status
+
+Windows | GCC | Clang
+:------------: | :------------: | :------------:
+[![Windows x64](https://github.com/ReyDonovan/TrinityPandaCore/actions/workflows/build-win-x64.yml/badge.svg)](https://github.com/ReyDonovan/TrinityPandaCore/actions/workflows/build-win-x64.yml)
+
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
@@ -26,6 +32,3 @@ Read file [THANKS](THANKS.md)
 
 ## To-Do List
 Read File [TO-DO](TODO.md)
-
-## New Address
-[github] (https://github.com/ReyDonovan/TrinityPandaCore).

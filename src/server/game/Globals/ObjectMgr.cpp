@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -7362,10 +7360,8 @@ void ObjectMgr::LoadQuestPOI()
 
     _questPOIStore.clear();                              // need for reload case
 
-    uint32 count = 0;
-
-    //                                               0        1   2         3      4               5        6     7
-    QueryResult result = WorldDatabase.Query("SELECT questId, id, objIndex, mapid, WorldMapAreaId, FloorId, unk3, unk4 FROM quest_poi order by questId");
+    //                                                   0        1     2               3                 4      5               6      7         8
+    QueryResult result = WorldDatabase.Query("SELECT QuestId, Idx1, ObjectiveIndex, QuestObjectiveId, MapID, WorldMapAreaId, Floor, Priority, Flags FROM quest_poi order by QuestId");
 
     if (!result)
     {
@@ -7373,32 +7369,24 @@ void ObjectMgr::LoadQuestPOI()
         return;
     }
 
-    //                                                0       1   2  3
-    QueryResult points = WorldDatabase.Query("SELECT questId, id, x, y FROM quest_poi_points ORDER BY questId DESC, idx");
+    //                                                   0        1     2  3
+    QueryResult points = WorldDatabase.Query("SELECT QuestId, Idx1, X, Y FROM quest_poi_points ORDER BY QuestId DESC, Idx1, Idx2");
 
-    std::vector<std::vector<std::vector<QuestPOIPoint> > > POIs;
+    std::unordered_map<uint32, std::map<uint32, std::vector<QuestPOIBlobPoint>>> allPoints;
 
     if (points)
     {
-        // The first result should have the highest questId
-        Field* fields = points->Fetch();
-        uint32 questIdMax = fields[0].GetUInt32();
-        POIs.resize(questIdMax + 1);
 
         do
         {
-            fields = points->Fetch();
+            Field* fields = points->Fetch();
 
-            uint32 questId            = fields[0].GetUInt32();
-            uint32 id                 = fields[1].GetUInt32();
-            int32  x                  = fields[2].GetInt32();
-            int32  y                  = fields[3].GetInt32();
+            uint32 QuestID = fields[0].GetUInt32();
+            uint32 Idx1 = fields[1].GetUInt32();
+            int32  X = fields[2].GetInt32();
+            int32  Y = fields[3].GetInt32();
 
-            if (POIs[questId].size() <= id + 1)
-                POIs[questId].resize(id + 10);
-
-            QuestPOIPoint point(x, y);
-            POIs[questId][id].push_back(point);
+            allPoints[QuestID][Idx1].emplace_back(X, Y);
         } while (points->NextRow());
     }
 
@@ -7406,24 +7394,36 @@ void ObjectMgr::LoadQuestPOI()
     {
         Field* fields = result->Fetch();
 
-        uint32 questId            = fields[0].GetUInt32();
-        uint32 id                 = fields[1].GetUInt32();
-        int32 objIndex            = fields[2].GetInt32();
-        uint32 mapId              = fields[3].GetUInt32();
-        uint32 WorldMapAreaId     = fields[4].GetUInt32();
-        uint32 FloorId            = fields[5].GetUInt32();
-        uint32 unk3               = fields[6].GetUInt32();
-        uint32 unk4               = fields[7].GetUInt32();
+        uint32 QuestID = fields[0].GetUInt32();
+        uint32 Idx1 = fields[1].GetUInt32();
+        int32 ObjectiveIndex = fields[2].GetInt32();
+        uint32 QuestObjectiveId = fields[3].GetUInt32();
+        uint32 MapId = fields[4].GetUInt32();
+        uint32 WorldMapAreaId = fields[5].GetUInt32();
+        uint32 Floor = fields[6].GetUInt32();
+        uint32 Priority = fields[7].GetUInt32();
+        uint32 Flags = fields[8].GetUInt32();
 
-        QuestPOI POI(id, objIndex, mapId, WorldMapAreaId, FloorId, unk3, unk4);
-        POI.points = POIs[questId][id];
+        if (!GetQuestTemplate(QuestID))
+            TC_LOG_ERROR("sql.sql", "`quest_poi` quest id (%u) Idx1 (%u) does not exist in `quest_template`", QuestID, Idx1);
 
-        _questPOIStore[questId].push_back(POI);
+        if (std::map<uint32, std::vector<QuestPOIBlobPoint>>* blobs = Trinity::Containers::MapGetValuePtr(allPoints, QuestID))
+        {
+            if (std::vector<QuestPOIBlobPoint>* points = Trinity::Containers::MapGetValuePtr(*blobs, Idx1))
+            {
+                QuestPOIData& poiData = _questPOIStore[QuestID];
+                poiData.QuestID = QuestID;
+                poiData.Blobs.emplace_back(
+                    Idx1, ObjectiveIndex, QuestObjectiveId, MapId,
+                    WorldMapAreaId, Floor, Priority, Flags, std::move(*points));
+                continue;
+            }
+        }
 
-        ++count;
+        TC_LOG_ERROR("sql.sql", "Table quest_poi references unknown quest points for quest %u POI id %u", QuestID, Idx1);
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u quest POI definitions in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded %u quest POI definitions in %u ms", _questPOIStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadNPCSpellClickSpells()
@@ -8307,6 +8307,11 @@ int32 ObjectMgr::GetBaseReputationOf(FactionEntry const* factionEntry, uint8 rac
     }
 
     return 0;
+}
+
+QuestPOIData const* ObjectMgr::GetQuestPOIData(uint32 questId)
+{
+    return Trinity::Containers::MapGetValuePtr(_questPOIStore, questId);
 }
 
 SkillRangeType GetSkillRangeType(SkillLineEntry const* pSkill, bool racial)

@@ -41,8 +41,10 @@ class HmacHash
         uint8 *GetDigest() { return (uint8*)m_digest; }
         int GetLength() const { return SHA_DIGEST_LENGTH; }
     private:
-        HMAC_CTX* _ctx;
+        EVP_MAC* m_mac;
+        EVP_MAC_CTX* m_ctx;
         uint8 m_digest[SHA_DIGEST_LENGTH];
+        OSSL_PARAM m_params[2];
 };
 #endif
 

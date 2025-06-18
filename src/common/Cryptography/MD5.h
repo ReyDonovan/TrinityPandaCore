@@ -17,36 +17,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _AUTH_SHA1_H
-#define _AUTH_SHA1_H
+#ifndef _AUTH_MD5_H
+#define _AUTH_MD5_H
 
 #include "Define.h"
 #include <string>
-#include <openssl/sha.h>
 #include <openssl/evp.h>
 
-class BigNumber;
-
-class SHA1Hash
+class MD5Hash
 {
     public:
-        SHA1Hash();
-        ~SHA1Hash();
-
-        void UpdateBigNumbers(BigNumber* bn0, ...);
-
-        void UpdateData(const uint8 *dta, int len);
+        MD5Hash();
+        ~MD5Hash();
         void UpdateData(const std::string &str);
-
-        void Initialize();
-        void Finalize();
-
-        uint8 *GetDigest(void) { return m_digest; };
-        int GetLength(void) const { return SHA_DIGEST_LENGTH; };
-
+        void UpdateData(const uint8* data, size_t len);
+        void Finalize(const uint8* data, uint32 len);
     private:
         EVP_MD_CTX* m_ctx;
-        uint8 m_digest[SHA_DIGEST_LENGTH];
 };
 #endif
-

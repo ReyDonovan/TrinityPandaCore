@@ -47,7 +47,6 @@
 #include "ScriptMgr.h"
 
 #include "BigNumber.h"
-#include "OpenSSLCrypto.h"
 
 #ifdef _WIN32
 #include <TlHelp32.h>
@@ -163,18 +162,8 @@ void RunAuthserverIfNeed()
 /// Main function
 int Master::Run()
 {
-    OpenSSLCrypto::threadsSetup();
     BigNumber seed1;
     seed1.SetRand(16 * 8);
-
-    TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon)", GitRevision::GetFullVersion());
-    TC_LOG_INFO("server.worldserver", "<Ctrl-C> to stop.\n");
-    TC_LOG_INFO("server.worldserver", "╔═══╗╔═══╗╔╗─╔╗───╔══╗╔══╗╔═══╗╔═══╗");
-    TC_LOG_INFO("server.worldserver", "╚═╗─║║╔══╝║╚═╝║───║╔═╝║╔╗║║╔═╗║║╔══╝");
-    TC_LOG_INFO("server.worldserver", "─╔╝╔╝║║╔═╗║╔╗─║───║║──║║║║║╚═╝║║╚══╗");
-    TC_LOG_INFO("server.worldserver", "╔╝╔╝─║║╚╗║║║╚╗║───║║──║║║║║╔╗╔╝║╔══╝");
-    TC_LOG_INFO("server.worldserver", "║─╚═╗║╚═╝║║║─║║───║╚═╗║╚╝║║║║║─║╚══╗");
-    TC_LOG_INFO("server.worldserver", "╚═══╝╚═══╝╚╝─╚╝───╚══╝╚══╝╚╝╚╝─╚═══╝\n");
 
     /// worldserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
@@ -329,8 +318,6 @@ int Master::Run()
     // set server online (allow connecting now)
     LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~%u, population = 0 WHERE id = '%u'", REALM_FLAG_INVALID, realmID);
 
-    TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon) ready...", GitRevision::GetFullVersion());
-
     // when the main thread closes the singletons get unloaded
     // since worldrunnable uses them, it will crash if unloaded after master
     worldThread.wait();
@@ -400,7 +387,6 @@ int Master::Run()
     // fixes a memory leak related to detaching threads from the module
     //UnloadScriptingModule();
 
-    OpenSSLCrypto::threadsCleanup();
     // Exit the process with specified return value
     return World::GetExitCode();
 }

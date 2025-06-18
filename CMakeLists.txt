@@ -62,7 +62,6 @@ include(GroupSources)
 include(AutoCollect)
 include(Macros)
 
-set(OPENSSL_EXPECTED_VERSION 1.1.1)
 set(ACE_EXPECTED_VERSION 6.4.5)
 
 find_package(PCHSupport)

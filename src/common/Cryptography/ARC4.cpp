@@ -19,20 +19,13 @@
 
 #include "ARC4.h"
 #include <openssl/sha.h>
+#include <openssl/provider.h>
 
-ARC4::ARC4(uint32 len) : m_ctx(EVP_CIPHER_CTX_new())
+ARC4::ARC4() : m_ctx(EVP_CIPHER_CTX_new())
 {
-    EVP_CIPHER_CTX_init(m_ctx);
-    EVP_EncryptInit_ex(m_ctx, EVP_rc4(), nullptr, nullptr, nullptr);
-    EVP_CIPHER_CTX_set_key_length(m_ctx, len);
-}
-
-ARC4::ARC4(uint8 const* seed, uint32 len) : m_ctx(EVP_CIPHER_CTX_new())
-{
-    EVP_CIPHER_CTX_init(m_ctx);
-    EVP_EncryptInit_ex(m_ctx, EVP_rc4(), nullptr, nullptr, nullptr);
-    EVP_CIPHER_CTX_set_key_length(m_ctx, len);
-    EVP_EncryptInit_ex(m_ctx, nullptr, nullptr, seed, nullptr);
+    OSSL_PROVIDER_load(nullptr, "legacy");
+    EVP_CIPHER_CTX_reset(m_ctx);
+    EVP_CipherInit(m_ctx, EVP_rc4(), nullptr, nullptr, 0);
 }
 
 ARC4::~ARC4()
@@ -40,14 +33,26 @@ ARC4::~ARC4()
     EVP_CIPHER_CTX_free(m_ctx);
 }
 
-void ARC4::Init(uint8 const* seed)
+void ARC4::Init(uint8 const* seed, size_t len)
 {
-    EVP_EncryptInit_ex(m_ctx, nullptr, nullptr, seed, nullptr);
+#if defined(WIN32)
+    m_params[0] = OSSL_PARAM_construct_size_t("keylen", &len);
+    m_params[1] = OSSL_PARAM_construct_end();
+    EVP_CipherInit_ex2(m_ctx, nullptr, seed, nullptr, 0, m_params);
+#else
+    EVP_CIPHER_CTX_set_key_length(m_ctx, len);
+    EVP_CipherInit(m_ctx, NULL, seed, NULL, 0);
+#endif
 }
 
 void ARC4::UpdateData(int len, uint8* data)
 {
     int outlen = 0;
-    EVP_EncryptUpdate(m_ctx, data, &outlen, data, len);
-    EVP_EncryptFinal_ex(m_ctx, data, &outlen);
+    EVP_CipherUpdate(m_ctx, data, &outlen, data, len);
+    Finalize(outlen, data);
+}
+
+void ARC4::Finalize(int outlen, uint8* data)
+{
+    EVP_CipherFinal_ex(m_ctx, data, &outlen);
 }

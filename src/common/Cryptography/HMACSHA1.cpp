@@ -21,52 +21,39 @@
 #include "BigNumber.h"
 #include "Common.h"
 
-#if defined(OPENSSL_VERSION_NUMBER) && OPENSSL_VERSION_NUMBER < 0x10100000L
-HMAC_CTX* HMAC_CTX_new()
+HmacHash::HmacHash(uint32 len, uint8* seed) : m_mac(EVP_MAC_fetch(NULL, "HMAC", NULL)), m_ctx(EVP_MAC_CTX_new(m_mac))
 {
-    HMAC_CTX *ctx = new HMAC_CTX();
-    HMAC_CTX_init(ctx);
-    return ctx;
-}
-
-void HMAC_CTX_free(HMAC_CTX* ctx)
-{
-    HMAC_CTX_cleanup(ctx);
-    delete ctx;
-}
-#endif
-
-HmacHash::HmacHash(uint32 len, uint8 *seed) : _ctx(HMAC_CTX_new())
-{
-	HMAC_Init_ex(_ctx, seed, len, EVP_sha1(), nullptr);
-	memset(m_digest, 0, sizeof(m_digest));
+    m_params[0] = OSSL_PARAM_construct_utf8_string("digest", const_cast<char*>("SHA1"), 0);
+    m_params[1] = OSSL_PARAM_construct_end();
+    EVP_MAC_init(m_ctx, seed, len, m_params);
 }
 
 HmacHash::~HmacHash()
 {
-	HMAC_CTX_free(_ctx);
+    EVP_MAC_CTX_free(m_ctx);
+    EVP_MAC_free(m_mac);
 }
 
 void HmacHash::UpdateData(std::string const& str)
 {
-    HMAC_Update(_ctx, reinterpret_cast<uint8 const*>(str.c_str()), str.length());
+    EVP_MAC_update(m_ctx, reinterpret_cast<uint8 const*>(str.c_str()), str.length());
 }
 
 void HmacHash::UpdateData(uint8 const* data, int len)
 {
-    HMAC_Update(_ctx, data, len);
+    EVP_MAC_update(m_ctx, data, len);
 }
 
 void HmacHash::Finalize()
 {
-    uint32 length = 0;
-    HMAC_Final(_ctx, (uint8*)m_digest, &length);
+    size_t length = 0;
+    EVP_MAC_final(m_ctx, (uint8*)m_digest, &length, sizeof(m_digest));
     ASSERT(length == SHA_DIGEST_LENGTH);
 }
 
 uint8 *HmacHash::ComputeHash(BigNumber* bn)
 {
-    HMAC_Update(_ctx, bn->AsByteArray(), bn->GetNumBytes());
+    EVP_MAC_update(m_ctx, bn->AsByteArray(), bn->GetNumBytes());
     Finalize();
     return (uint8*)m_digest;
 }

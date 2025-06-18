@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -17,19 +15,25 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _AUTHCRYPT_H
-#define _AUTHCRYPT_H
-
 #include "PacketCrypt.h"
 
-class BigNumber;
-
-class AuthCrypt : public PacketCrypt
+PacketCrypt::PacketCrypt(uint32 rc4InitSize)
+    : _clientDecrypt(rc4InitSize), _serverEncrypt(rc4InitSize), _initialized(false)
 {
-    public:
-        AuthCrypt();
+}
 
-        void Init(BigNumber* K) override;
-        void Init(BigNumber* k, uint8 const* serverKey, uint8 const* clientKey);
-};
-#endif
+void PacketCrypt::DecryptRecv(uint8* data, size_t len)
+{
+    if (!_initialized)
+        return;
+
+    _clientDecrypt.UpdateData(len, data);
+}
+
+void PacketCrypt::EncryptSend(uint8* data, size_t len)
+{
+    if (!_initialized)
+        return;
+
+    _serverEncrypt.UpdateData(len, data);
+}

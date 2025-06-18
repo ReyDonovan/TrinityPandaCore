@@ -19,54 +19,52 @@
 
 #include "HMACSHA1.h"
 #include "BigNumber.h"
-#include "Common.h"
+#include "Errors.h"
+#include <cstring>
 
-#if defined(OPENSSL_VERSION_NUMBER) && OPENSSL_VERSION_NUMBER < 0x10100000L
-HMAC_CTX* HMAC_CTX_new()
+template<HashCreateFn HashCreator, uint32 DigestLength>
+HmacHash<HashCreator, DigestLength>::HmacHash(uint32 len, uint8 const* seed) : _ctx(EVP_MD_CTX_create()), _key(EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, nullptr, seed, len))
 {
-    HMAC_CTX *ctx = new HMAC_CTX();
-    HMAC_CTX_init(ctx);
-    return ctx;
+    EVP_DigestSignInit(_ctx, nullptr, HashCreator(), nullptr, _key);
+    memset(_digest, 0, DigestLength);
 }
 
-void HMAC_CTX_free(HMAC_CTX* ctx)
+template<HashCreateFn HashCreator, uint32 DigestLength>
+HmacHash<HashCreator, DigestLength>::~HmacHash()
 {
-    HMAC_CTX_cleanup(ctx);
-    delete ctx;
-}
-#endif
-
-HmacHash::HmacHash(uint32 len, uint8 *seed) : _ctx(HMAC_CTX_new())
-{
-	HMAC_Init_ex(_ctx, seed, len, EVP_sha1(), nullptr);
-	memset(m_digest, 0, sizeof(m_digest));
+    EVP_MD_CTX_destroy(_ctx);
+    _ctx = nullptr;
+    EVP_PKEY_free(_key);
+    _key = nullptr;
 }
 
-HmacHash::~HmacHash()
+template<HashCreateFn HashCreator, uint32 DigestLength>
+void HmacHash<HashCreator, DigestLength>::UpdateData(std::string const& str)
 {
-	HMAC_CTX_free(_ctx);
+    EVP_DigestSignUpdate(_ctx, reinterpret_cast<uint8 const*>(str.c_str()), str.length());
 }
 
-void HmacHash::UpdateData(std::string const& str)
+template<HashCreateFn HashCreator, uint32 DigestLength>
+void HmacHash<HashCreator, DigestLength>::UpdateData(uint8 const* data, size_t len)
 {
-    HMAC_Update(_ctx, reinterpret_cast<uint8 const*>(str.c_str()), str.length());
+    EVP_DigestSignUpdate(_ctx, data, len);
 }
 
-void HmacHash::UpdateData(uint8 const* data, int len)
+template<HashCreateFn HashCreator, uint32 DigestLength>
+void HmacHash<HashCreator, DigestLength>::Finalize()
 {
-    HMAC_Update(_ctx, data, len);
+    size_t length = DigestLength;
+    EVP_DigestSignFinal(_ctx, _digest, &length);
+    ASSERT(length == DigestLength);
 }
 
-void HmacHash::Finalize()
+template<HashCreateFn HashCreator, uint32 DigestLength>
+uint8* HmacHash<HashCreator, DigestLength>::ComputeHash(BigNumber* bn)
 {
-    uint32 length = 0;
-    HMAC_Final(_ctx, (uint8*)m_digest, &length);
-    ASSERT(length == SHA_DIGEST_LENGTH);
-}
-
-uint8 *HmacHash::ComputeHash(BigNumber* bn)
-{
-    HMAC_Update(_ctx, bn->AsByteArray(), bn->GetNumBytes());
+    EVP_DigestSignUpdate(_ctx, bn->AsByteArray(), bn->GetNumBytes());
     Finalize();
-    return (uint8*)m_digest;
+    return _digest;
 }
+
+template class HmacHash<EVP_sha1, SHA_DIGEST_LENGTH>;
+template class HmacHash<EVP_sha256, SHA256_DIGEST_LENGTH>;

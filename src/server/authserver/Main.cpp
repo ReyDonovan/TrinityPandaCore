@@ -25,7 +25,6 @@
 * authentication server
 */
 
-#pragma comment (lib, "Crypt32")
 #include <ace/Dev_Poll_Reactor.h>
 #include <ace/TP_Reactor.h>
 #include <ace/ACE.h>
@@ -129,7 +128,6 @@ extern int main(int argc, char** argv)
         return 1;
     }
 
-    TC_LOG_INFO("server.authserver", "Using configuration file %s.", configFile);
     TC_LOG_INFO("server.authserver", "%s (authserver)", GitRevision::GetFullVersion());
     TC_LOG_INFO("server.authserver", "<Ctrl-C> to stop.\n");
     TC_LOG_INFO("server.authserver", "╔═══╗╔═══╗╔╗─╔╗───╔══╗╔══╗╔═══╗╔═══╗");
@@ -139,7 +137,9 @@ extern int main(int argc, char** argv)
     TC_LOG_INFO("server.authserver", "║─╚═╗║╚═╝║║║─║║───║╚═╗║╚╝║║║║║─║╚══╗");
     TC_LOG_INFO("server.authserver", "╚═══╝╚═══╝╚╝─╚╝───╚══╝╚══╝╚╝╚╝─╚═══╝\n");
 
-    TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
+    TC_LOG_INFO("server.authserver", "Using configuration file %s.", configFile);
+
+    TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);

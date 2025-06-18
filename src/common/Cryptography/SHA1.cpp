@@ -21,19 +21,20 @@
 #include "BigNumber.h"
 #include <stdarg.h>
 
-SHA1Hash::SHA1Hash() : m_ctx(EVP_MD_CTX_new())
+SHA1Hash::SHA1Hash()
 {
-    EVP_DigestInit_ex(m_ctx, EVP_sha1(), NULL);
+    SHA1_Init(&mC);
+    memset(mDigest, 0, SHA_DIGEST_LENGTH * sizeof(uint8));
 }
 
 SHA1Hash::~SHA1Hash()
 {
-    EVP_MD_CTX_free(m_ctx);
+    SHA1_Init(&mC);
 }
 
 void SHA1Hash::UpdateData(const uint8 *dta, int len)
 {
-    EVP_DigestUpdate(m_ctx, dta, len);
+    SHA1_Update(&mC, dta, len);
 }
 
 void SHA1Hash::UpdateData(const std::string &str)
@@ -58,12 +59,11 @@ void SHA1Hash::UpdateBigNumbers(BigNumber* bn0, ...)
 
 void SHA1Hash::Initialize()
 {
-    EVP_DigestInit(m_ctx, EVP_sha1());
+    SHA1_Init(&mC);
 }
 
 void SHA1Hash::Finalize(void)
 {
-    uint32 length = SHA_DIGEST_LENGTH;
-    EVP_DigestFinal_ex(m_ctx, m_digest, &length);
+    SHA1_Final(mDigest, &mC);
 }
 

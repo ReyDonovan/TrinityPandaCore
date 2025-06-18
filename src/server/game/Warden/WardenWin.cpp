@@ -25,7 +25,7 @@
 #include "Log.h"
 #include "Opcodes.h"
 #include "ByteBuffer.h"
-#include "MD5.h"
+#include <openssl/md5.h>
 #include "Database/DatabaseEnv.h"
 #include "World.h"
 #include "Player.h"
@@ -46,11 +46,19 @@ void WardenWin::Init(WorldSession* session, BigNumber* k)
     _session = session;
     // Generate Warden Key
     SHA1Randx WK(k->AsByteArray(), k->GetNumBytes());
-    WK.Generate(_inputKey, 16);
-    WK.Generate(_outputKey, 16);
 
-    _inputCrypto.Init(_inputKey, 16);
-    _outputCrypto.Init(_outputKey, 16);
+    // Initial encryption is done with session key
+    uint8 inputKey[MD5_DIGEST_LENGTH];
+    uint8 outputKey[MD5_DIGEST_LENGTH];
+
+    auto const inputKeySize = sizeof(inputKey);
+    auto const outputKeySize = sizeof(outputKey);
+
+    WK.Generate(inputKey, inputKeySize);
+    WK.Generate(outputKey, outputKeySize);
+
+    _inputCrypto.Init(inputKey);
+    _outputCrypto.Init(outputKey);
 
     _module.data = std::make_pair(winWardenModule.Module, sizeof(winWardenModule.Module));
     _module.key = std::make_pair(winWardenModule.ModuleKey, sizeof(winWardenModule.ModuleKey));
@@ -60,11 +68,11 @@ void WardenWin::Init(WorldSession* session, BigNumber* k)
     _module.clientKeySeed = std::make_pair(winWardenModule.ClientKeySeed, sizeof(winWardenModule.ClientKeySeed));
     _module.clientKeySeedHash = std::make_pair(winWardenModule.ClientKeySeedHash, sizeof(winWardenModule.ClientKeySeedHash));
 
-    TC_LOG_DEBUG("warden", "Server side warden for client %u initializing...", session->GetAccountId());
-    TC_LOG_DEBUG("warden", "C->S Key: %s", ByteArrayToHexStr(_inputKey, 16).c_str());
-    TC_LOG_DEBUG("warden", "S->C Key: %s", ByteArrayToHexStr(_outputKey, 16).c_str());
-    TC_LOG_DEBUG("warden", "  Seed: %s", ByteArrayToHexStr(_seed, 16).c_str());
-    TC_LOG_DEBUG("warden", "Loading Module...");
+    TC_LOG_DEBUG("warden", "%u - Server side warden initializing...", session->GetAccountId());
+    TC_LOG_DEBUG("warden", "%u - C->S Key: %s", session->GetAccountId(), ByteArrayToHexStr(inputKey, inputKeySize).c_str());
+    TC_LOG_DEBUG("warden", "%u - S->C Key: %s", session->GetAccountId(), ByteArrayToHexStr(outputKey, outputKeySize).c_str());
+    TC_LOG_DEBUG("warden", "%u - Module Key: %s", session->GetAccountId(), ByteArrayToHexStr(_module.key.first, _module.key.second).c_str());
+    TC_LOG_DEBUG("warden", "%u - Module Hash: %s", session->GetAccountId(), ByteArrayToHexStr(_module.hash.first, _module.hash.second).c_str());
 
     RequestModule();
     DoCustomMemCheck(12967816, 4);
@@ -108,8 +116,8 @@ void WardenWin::HandleHashResult(ByteBuffer &buff)
     TC_LOG_DEBUG("warden", "%u - Request hash reply: succeed", _session->GetAccountId());
 
     // reinit crypto keys
-    _inputCrypto.Init(_module.clientKeySeed.first, 16);
-    _outputCrypto.Init(_module.serverKeySeed.first, 16);
+    _inputCrypto.Init(_module.clientKeySeed.first);
+    _outputCrypto.Init(_module.serverKeySeed.first);
 
     _initialized = true;
     _previousTimestamp = getMSTime();

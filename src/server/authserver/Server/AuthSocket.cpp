@@ -18,7 +18,7 @@
  */
 
 #include <algorithm>
-#include "MD5.h"
+#include <openssl/md5.h>
 
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
@@ -123,7 +123,7 @@ typedef struct XFER_INIT
     uint8 fileNameLen;                                      // strlen(fileName);
     uint8 fileName[5];                                      // fileName[fileNameLen]
     uint64 file_size;                                       // file size (bytes)
-    uint8 md5[16];                           // MD5
+    uint8 md5[MD5_DIGEST_LENGTH];                           // MD5
 } XFER_INIT;
 
 typedef struct XFER_DATA
@@ -160,7 +160,7 @@ private:
 
 typedef struct PATCH_INFO
 {
-    uint8 md5[16];
+    uint8 md5[MD5_DIGEST_LENGTH];
 } PATCH_INFO;
 
 // Caches MD5 hash of client patches present on the server
@@ -292,16 +292,16 @@ void AuthSocket::_SetVSFields(const std::string& rI)
     I.SetHexStr(rI.c_str());
 
     // In case of leading zeros in the rI hash, restore them
-    uint8 m_Digest[SHA_DIGEST_LENGTH];
-    memset(m_Digest, 0, SHA_DIGEST_LENGTH);
+    uint8 mDigest[SHA_DIGEST_LENGTH];
+    memset(mDigest, 0, SHA_DIGEST_LENGTH);
     if (I.GetNumBytes() <= SHA_DIGEST_LENGTH)
-        memcpy(m_Digest, I.AsByteArray(), I.GetNumBytes());
+        memcpy(mDigest, I.AsByteArray(), I.GetNumBytes());
 
-    std::reverse(m_Digest, m_Digest + SHA_DIGEST_LENGTH);
+    std::reverse(mDigest, mDigest + SHA_DIGEST_LENGTH);
 
     SHA1Hash sha;
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
-    sha.UpdateData(m_Digest, SHA_DIGEST_LENGTH);
+    sha.UpdateData(mDigest, SHA_DIGEST_LENGTH);
     sha.Finalize();
     BigNumber x;
     x.SetBinary(sha.GetDigest(), sha.GetLength());
@@ -1128,13 +1128,14 @@ void Patcher::LoadPatchMD5(char *szFileName)
     }
 
     // Calculate the MD5 hash
-    MD5Hash md5;
+    MD5_CTX ctx;
+    MD5_Init(&ctx);
     uint8* buf = new uint8[512 * 1024];
 
     while (!feof(pPatch))
     {
         size_t read = fread(buf, 1, 512 * 1024, pPatch);
-        md5.UpdateData(buf, read);
+        MD5_Update(&ctx, buf, read);
     }
 
     delete [] buf;
@@ -1142,7 +1143,7 @@ void Patcher::LoadPatchMD5(char *szFileName)
 
     // Store the result in the internal patch hash map
     _patches[path] = new PATCH_INFO;
-    md5.Finalize((uint8 *)&_patches[path]->md5, 16);
+    MD5_Final((uint8 *)&_patches[path]->md5, &ctx);
 }
 
 // Get cached MD5 hash for a given patch file

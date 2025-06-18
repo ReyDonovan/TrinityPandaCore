@@ -21,13 +21,11 @@
 /// @{
 /// \file
 
-#pragma comment (lib, "Crypt32")
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include <ace/Version.h>
 
 #include "Common.h"
-#include "GitRevision.h"
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"
 
@@ -138,16 +136,8 @@ extern int main(int argc, char** argv)
     }
 
     TC_LOG_INFO("server.worldserver", "Using configuration file %s.", cfg_file);
-    TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon)", GitRevision::GetFullVersion());
-    TC_LOG_INFO("server.worldserver", "<Ctrl-C> to stop.\n");
-    TC_LOG_INFO("server.worldserver", "╔═══╗╔═══╗╔╗─╔╗───╔══╗╔══╗╔═══╗╔═══╗");
-    TC_LOG_INFO("server.worldserver", "╚═╗─║║╔══╝║╚═╝║───║╔═╝║╔╗║║╔═╗║║╔══╝");
-    TC_LOG_INFO("server.worldserver", "─╔╝╔╝║║╔═╗║╔╗─║───║║──║║║║║╚═╝║║╚══╗");
-    TC_LOG_INFO("server.worldserver", "╔╝╔╝─║║╚╗║║║╚╗║───║║──║║║║║╔╗╔╝║╔══╝");
-    TC_LOG_INFO("server.worldserver", "║─╚═╗║╚═╝║║║─║║───║╚═╗║╚╝║║║║║─║╚══╗");
-    TC_LOG_INFO("server.worldserver", "╚═══╝╚═══╝╚╝─╚╝───╚══╝╚══╝╚╝╚╝─╚═══╝\n");
 
-    TC_LOG_INFO("server.worldserver", "Using SSL version: %s (library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
+    TC_LOG_INFO("server.worldserver", "Using SSL version: %s (library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
     TC_LOG_INFO("server.worldserver", "Using ACE version: %s", ACE_VERSION);
 
     ///- and run the 'Master'

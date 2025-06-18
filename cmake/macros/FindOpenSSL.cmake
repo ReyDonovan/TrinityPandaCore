@@ -7,28 +7,14 @@ FindOpenSSL
 
 Find the OpenSSL encryption library.
 
-This module finds an installed OpenSSL library and determines its version.
-
-.. versionadded:: 3.19
-  When a version is requested, it can be specified as a simple value or as a
-  range. For a detailed description of version range usage and capabilities,
-  refer to the :command:`find_package` command.
-
-.. versionadded:: 3.18
-  Support for OpenSSL 3.0.
-
 Optional COMPONENTS
 ^^^^^^^^^^^^^^^^^^^
-
-.. versionadded:: 3.12
 
 This module supports two optional COMPONENTS: ``Crypto`` and ``SSL``.  Both
 components have associated imported targets, as described below.
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
-
-.. versionadded:: 3.4
 
 This module defines the following :prop_tgt:`IMPORTED` targets:
 
@@ -37,8 +23,6 @@ This module defines the following :prop_tgt:`IMPORTED` targets:
 ``OpenSSL::Crypto``
   The OpenSSL ``crypto`` library, if found.
 ``OpenSSL::applink``
-  .. versionadded:: 3.18
-
   The OpenSSL ``applink`` components that might be need to be compiled into
   projects under MSVC. This target is available only if found OpenSSL version
   is not less than 0.9.8. By linking this target the above OpenSSL targets can
@@ -90,115 +74,37 @@ This module will set the following variables in your project:
 Hints
 ^^^^^
 
-The following variables may be set to control search behavior:
-
-``OPENSSL_ROOT_DIR``
-  Set to the root directory of an OpenSSL installation.
-
-``OPENSSL_USE_STATIC_LIBS``
-  .. versionadded:: 3.4
-
-  Set to ``TRUE`` to look for static libraries.
-
-``OPENSSL_MSVC_STATIC_RT``
-  .. versionadded:: 3.5
-
-  Set to ``TRUE`` to choose the MT version of the lib.
-
-``ENV{PKG_CONFIG_PATH}``
-  On UNIX-like systems, ``pkg-config`` is used to locate the system OpenSSL.
-  Set the ``PKG_CONFIG_PATH`` environment variable to look in alternate
-  locations.  Useful on multi-lib systems.
+Set ``OPENSSL_ROOT_DIR`` to the root directory of an OpenSSL installation.
+Set ``OPENSSL_USE_STATIC_LIBS`` to ``TRUE`` to look for static libraries.
+Set ``OPENSSL_MSVC_STATIC_RT`` set ``TRUE`` to choose the MT version of the lib.
 #]=======================================================================]
 
+set(OPENSSL_EXPECTED_VERSION "1.0")
+set(OPENSSL_MAX_VERSION "1.2")
+
 macro(_OpenSSL_test_and_find_dependencies ssl_library crypto_library)
-  unset(_OpenSSL_extra_static_deps)
-  if(UNIX AND
+  if((CMAKE_SYSTEM_NAME STREQUAL "Linux") AND
      (("${ssl_library}" MATCHES "\\${CMAKE_STATIC_LIBRARY_SUFFIX}$") OR
       ("${crypto_library}" MATCHES "\\${CMAKE_STATIC_LIBRARY_SUFFIX}$")))
     set(_OpenSSL_has_dependencies TRUE)
-    unset(_OpenSSL_has_dependency_zlib)
-    if(OPENSSL_USE_STATIC_LIBS)
-      set(_OpenSSL_libs "${_OPENSSL_STATIC_LIBRARIES}")
-      set(_OpenSSL_ldflags_other "${_OPENSSL_STATIC_LDFLAGS_OTHER}")
-    else()
-      set(_OpenSSL_libs "${_OPENSSL_LIBRARIES}")
-      set(_OpenSSL_ldflags_other "${_OPENSSL_LDFLAGS_OTHER}")
-    endif()
-    if(_OpenSSL_libs)
-      unset(_OpenSSL_has_dependency_dl)
-      foreach(_OPENSSL_DEP_LIB IN LISTS _OpenSSL_libs)
-        if (_OPENSSL_DEP_LIB STREQUAL "ssl" OR _OPENSSL_DEP_LIB STREQUAL "crypto")
-          # ignoring: these are the targets
-        elseif(_OPENSSL_DEP_LIB STREQUAL CMAKE_DL_LIBS)
-          set(_OpenSSL_has_dependency_dl TRUE)
-        elseif(_OPENSSL_DEP_LIB STREQUAL "z")
-          find_package(ZLIB)
-          set(_OpenSSL_has_dependency_zlib TRUE)
-        else()
-          list(APPEND _OpenSSL_extra_static_deps "${_OPENSSL_DEP_LIB}")
-        endif()
-      endforeach()
-      unset(_OPENSSL_DEP_LIB)
-    elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-      set(_OpenSSL_has_dependency_dl TRUE)
-    endif()
-    if(_OpenSSL_ldflags_other)
-      unset(_OpenSSL_has_dependency_threads)
-      foreach(_OPENSSL_DEP_LDFLAG IN LISTS _OpenSSL_ldflags_other)
-        if (_OPENSSL_DEP_LDFLAG STREQUAL "-pthread")
-          set(_OpenSSL_has_dependency_threads TRUE)
-          find_package(Threads)
-        endif()
-      endforeach()
-      unset(_OPENSSL_DEP_LDFLAG)
-    elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-      set(_OpenSSL_has_dependency_threads TRUE)
-      find_package(Threads)
-    endif()
-    unset(_OpenSSL_libs)
-    unset(_OpenSSL_ldflags_other)
+    find_package(Threads)
   else()
     set(_OpenSSL_has_dependencies FALSE)
   endif()
 endmacro()
 
 function(_OpenSSL_add_dependencies libraries_var)
-  if(_OpenSSL_has_dependency_zlib)
-    list(APPEND ${libraries_var} ${ZLIB_LIBRARY})
-  endif()
-  if(_OpenSSL_has_dependency_threads)
+  if(CMAKE_THREAD_LIBS_INIT)
     list(APPEND ${libraries_var} ${CMAKE_THREAD_LIBS_INIT})
   endif()
-  if(_OpenSSL_has_dependency_dl)
-    list(APPEND ${libraries_var} ${CMAKE_DL_LIBS})
-  endif()
-  list(APPEND ${libraries_var} ${_OpenSSL_extra_static_deps})
+  list(APPEND ${libraries_var} ${CMAKE_DL_LIBS})
   set(${libraries_var} ${${libraries_var}} PARENT_SCOPE)
 endfunction()
 
 function(_OpenSSL_target_add_dependencies target)
   if(_OpenSSL_has_dependencies)
-    if(_OpenSSL_has_dependency_zlib)
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ZLIB::ZLIB )
-    endif()
-    if(_OpenSSL_has_dependency_threads)
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads)
-    endif()
-    if(_OpenSSL_has_dependency_dl)
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${CMAKE_DL_LIBS} )
-    endif()
-    if(_OpenSSL_extra_static_deps)
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${_OpenSSL_extra_static_deps})
-    endif()
-  endif()
-  if(WIN32 AND OPENSSL_USE_STATIC_LIBS)
-    if(WINCE)
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ws2 )
-    else()
-      set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ws2_32 )
-    endif()
-    set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES crypt32 )
+    set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES Threads::Threads )
+    set_property( TARGET ${target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${CMAKE_DL_LIBS} )
   endif()
 endfunction()
 
@@ -210,87 +116,62 @@ endif ()
 # Support preference of static libs by adjusting CMAKE_FIND_LIBRARY_SUFFIXES
 if(OPENSSL_USE_STATIC_LIBS)
   set(_openssl_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
-  if(MSVC)
+  if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
   else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a )
   endif()
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "QNX" AND
-  CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL "7.0" AND CMAKE_SYSTEM_VERSION VERSION_LESS "7.1" AND
-  OpenSSL_FIND_VERSION VERSION_GREATER_EQUAL "1.1" AND OpenSSL_FIND_VERSION VERSION_LESS "1.2")
-  # QNX 7.0.x provides openssl 1.0.2 and 1.1.1 in parallel:
-  # * openssl 1.0.2: libcrypto.so.2 and libssl.so.2, headers under usr/include/openssl
-  # * openssl 1.1.1: libcrypto1_1.so.2.1 and libssl1_1.so.2.1, header under usr/include/openssl1_1
-  # See http://www.qnx.com/developers/articles/rel_6726_0.html
-  set(_OPENSSL_FIND_PATH_SUFFIX "openssl1_1")
-  set(_OPENSSL_NAME_POSTFIX "1_1")
-else()
-  set(_OPENSSL_FIND_PATH_SUFFIX "include")
-endif()
-
-if (OPENSSL_ROOT_DIR OR NOT "$ENV{OPENSSL_ROOT_DIR}" STREQUAL "")
-  set(_OPENSSL_ROOT_HINTS HINTS ${OPENSSL_ROOT_DIR} ENV OPENSSL_ROOT_DIR)
-  set(_OPENSSL_ROOT_PATHS NO_DEFAULT_PATH)
-elseif (MSVC)
+if (WIN32)
   # http://www.slproweb.com/products/Win32OpenSSL.html
-  set(_OPENSSL_MSI_INSTALL_GUIDS "")
-
-  if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
-    if(TRINITY_SYSTEM_PROCESSOR STREQUAL "arm64")
-      set(_arch "Win64-ARM")
-      set(_OPENSSL_MSI_INSTALL_GUIDS "99C28AFA-6419-40B1-B88D-32B810BB4234")
-    else()
-      set(_arch "Win64")
-      set(_OPENSSL_MSI_INSTALL_GUIDS "117551DB-A110-4BBD-BB05-CFE0BCB3ED31" "50A9FBE2-0F8C-4D5D-97A4-A63A71C4EA1E")
-    endif()
+  set(_OPENSSL_MSI_INSTALL_GUID "")
+  if(PLATFORM EQUAL 64)
+    set(_OPENSSL_MSI_INSTALL_GUID "117551DB-A110-4BBD-BB05-CFE0BCB3ED31")
+    set(_OPENSSL_ROOT_HINTS
+      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OpenSSL (64-bit)_is1;Inno Setup: App Path]"
+      ${OPENSSL_ROOT_DIR}
+      ENV OPENSSL_ROOT_DIR
+      )
     file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _programfiles)
-    set(_OPENSSL_ROOT_HINTS HINTS "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OpenSSL (64-bit)_is1;Inno Setup: App Path]")
+    set(_OPENSSL_ROOT_PATHS
+      "${_programfiles}/OpenSSL"
+      "${_programfiles}/OpenSSL-Win64"
+      "C:/OpenSSL/"
+      "C:/OpenSSL-Win64/"
+      )
   else()
-    set(_arch "Win32")
-    set(_progfiles_x86 "ProgramFiles(x86)")
-    if(NOT "$ENV{${_progfiles_x86}}" STREQUAL "")
-      # under windows 64 bit machine
-      file(TO_CMAKE_PATH "$ENV{${_progfiles_x86}}" _programfiles)
-    else()
-      # under windows 32 bit machine
-      file(TO_CMAKE_PATH "$ENV{ProgramFiles}" _programfiles)
-    endif()
-    set(_OPENSSL_ROOT_HINTS HINTS "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OpenSSL (32-bit)_is1;Inno Setup: App Path]")
-	set(_OPENSSL_MSI_INSTALL_GUIDS "A1EEC576-43B9-4E75-9E02-03DA542D2A38" "31D2408A-9CAE-4988-9EC3-F40FDE7D6AE5")
+    set(_OPENSSL_MSI_INSTALL_GUID "A1EEC576-43B9-4E75-9E02-03DA542D2A38")
+    set(_OPENSSL_ROOT_HINTS
+      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OpenSSL (32-bit)_is1;Inno Setup: App Path]"
+      ${OPENSSL_ROOT_DIR}
+      ENV OPENSSL_ROOT_DIR
+      )
+    file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" _programfiles)
+    set(_OPENSSL_ROOT_PATHS
+      "${_programfiles}/OpenSSL"
+      "${_programfiles}/OpenSSL-Win32"
+      "C:/OpenSSL/"
+      "C:/OpenSSL-Win32/"
+      )
   endif()
-
+  unset(_programfiles)
   # If OpenSSL was installed using .msi package instead of .exe, Inno Setup registry values are not written to Uninstall\OpenSSL
   # but because it is only a shim around Inno Setup it does write the location of uninstaller which we can use to determine path
-  foreach(_OPENSSL_MSI_INSTALL_GUID IN LISTS _OPENSSL_MSI_INSTALL_GUIDS)
-    get_filename_component(_OPENSSL_MSI_INSTALL_PATH "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Inno Setup MSIs\\${_OPENSSL_MSI_INSTALL_GUID};]" DIRECTORY)
-    if(NOT _OPENSSL_MSI_INSTALL_PATH STREQUAL "/")
-      list(INSERT _OPENSSL_ROOT_HINTS 2 ${_OPENSSL_MSI_INSTALL_PATH})
-    endif()
-  endforeach()
-  unset(_OPENSSL_MSI_INSTALL_GUIDS)
-
-  set(_OPENSSL_ROOT_PATHS
-    PATHS
-    "${_programfiles}/OpenSSL"
-    "${_programfiles}/OpenSSL-${_arch}"
-    "C:/OpenSSL/"
-    "C:/OpenSSL-${_arch}/"
+  get_filename_component(_OPENSSL_MSI_INSTALL_PATH "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Inno Setup MSIs\\${_OPENSSL_MSI_INSTALL_GUID};]" DIRECTORY)
+  if(NOT _OPENSSL_MSI_INSTALL_PATH STREQUAL "/")
+    list(INSERT _OPENSSL_ROOT_HINTS 0 ${_OPENSSL_MSI_INSTALL_PATH})
+  endif()
+else ()
+  set(_OPENSSL_ROOT_HINTS
+    ${OPENSSL_ROOT_DIR}
+    ENV OPENSSL_ROOT_DIR
     )
-  unset(_programfiles)
-  unset(_arch)
 endif ()
 
-if(HOMEBREW_PREFIX)
-  list(APPEND _OPENSSL_ROOT_HINTS
-    "${HOMEBREW_PREFIX}/opt/openssl@1.1"
-    "${HOMEBREW_PREFIX}/opt/openssl@3")
-endif()
-
 set(_OPENSSL_ROOT_HINTS_AND_PATHS
-    ${_OPENSSL_ROOT_HINTS}
-    ${_OPENSSL_ROOT_PATHS}
+    HINTS ${_OPENSSL_ROOT_HINTS}
+    PATHS ${_OPENSSL_ROOT_PATHS}
     )
 
 find_path(OPENSSL_INCLUDE_DIR
@@ -301,7 +182,7 @@ find_path(OPENSSL_INCLUDE_DIR
     ${_OPENSSL_INCLUDEDIR}
     ${_OPENSSL_INCLUDE_DIRS}
   PATH_SUFFIXES
-    ${_OPENSSL_FIND_PATH_SUFFIX}
+    include
 )
 
 if(WIN32 AND NOT CYGWIN)
@@ -329,16 +210,10 @@ if(WIN32 AND NOT CYGWIN)
     endif ()
 
     # Since OpenSSL 1.1, lib names are like libcrypto32MTd.lib and libssl32MTd.lib
-    if( "${CMAKE_SIZEOF_VOID_P}" STREQUAL "8" )
-      set(_OPENSSL_MSVC_ARCH_SUFFIX "64")
-      if(TRINITY_SYSTEM_PROCESSOR STREQUAL "arm64")
-        set(_OPENSSL_MSVC_ARCH_DIRECTORY "arm64")
-      else()
-        set(_OPENSSL_MSVC_ARCH_DIRECTORY "x64")
-      endif()
+    if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+        set(_OPENSSL_MSVC_ARCH_SUFFIX "64")
     else()
-      set(_OPENSSL_MSVC_ARCH_SUFFIX "32")
-      set(_OPENSSL_MSVC_ARCH_DIRECTORY "x86")
+        set(_OPENSSL_MSVC_ARCH_SUFFIX "32")
     endif()
 
     if(OPENSSL_USE_STATIC_LIBS)
@@ -363,39 +238,28 @@ if(WIN32 AND NOT CYGWIN)
 
     find_library(LIB_EAY_DEBUG
       NAMES
-        libcrypto${_OPENSSL_STATIC_SUFFIX}
+        # When OpenSSL is built with default options, the static library name is suffixed with "_static".
+        # Looking the "libcrypto_static.lib" with a higher priority than "libcrypto.lib" which is the
+        # import library of "libcrypto.dll".
+        libcrypto${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libcrypto${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libcrypto${_OPENSSL_STATIC_SUFFIX}d
+        libeay32${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libeay32${_OPENSSL_STATIC_SUFFIX}d
+        crypto${_OPENSSL_STATIC_SUFFIX}d
+        # When OpenSSL is built with the "-static" option, only the static build is produced,
+        # and it is not suffixed with "_static".
+        libcrypto${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libcrypto${_OPENSSL_MSVC_RT_MODE}d
+        libcryptod
+        libeay32${_OPENSSL_MSVC_RT_MODE}d
+        libeay32d
+        cryptod
       NAMES_PER_DIR
       ${_OPENSSL_ROOT_HINTS_AND_PATHS}
       PATH_SUFFIXES
-        "lib/VC/${_OPENSSL_MSVC_ARCH_DIRECTORY}/${_OPENSSL_MSVC_RT_MODE}d"
+        ${_OPENSSL_PATH_SUFFIXES}
     )
-
-    if(NOT LIB_EAY_DEBUG)
-      find_library(LIB_EAY_DEBUG
-        NAMES
-          # When OpenSSL is built with default options, the static library name is suffixed with "_static".
-          # Looking the "libcrypto_static.lib" with a higher priority than "libcrypto.lib" which is the
-          # import library of "libcrypto.dll".
-          libcrypto${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libcrypto${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libcrypto${_OPENSSL_STATIC_SUFFIX}d
-          libeay32${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libeay32${_OPENSSL_STATIC_SUFFIX}d
-          crypto${_OPENSSL_STATIC_SUFFIX}d
-          # When OpenSSL is built with the "-static" option, only the static build is produced,
-          # and it is not suffixed with "_static".
-          libcrypto${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libcrypto${_OPENSSL_MSVC_RT_MODE}d
-          libcryptod
-          libeay32${_OPENSSL_MSVC_RT_MODE}d
-          libeay32d
-          cryptod
-        NAMES_PER_DIR
-        ${_OPENSSL_ROOT_HINTS_AND_PATHS}
-        PATH_SUFFIXES
-          ${_OPENSSL_PATH_SUFFIXES}
-      )
-    endif()
 
     find_library(LIB_EAY_RELEASE
       NAMES
@@ -420,44 +284,32 @@ if(WIN32 AND NOT CYGWIN)
       ${_OPENSSL_ROOT_HINTS_AND_PATHS}
       PATH_SUFFIXES
         ${_OPENSSL_PATH_SUFFIXES}
-        "lib/VC/${_OPENSSL_MSVC_ARCH_DIRECTORY}/${_OPENSSL_MSVC_RT_MODE}"
     )
 
     find_library(SSL_EAY_DEBUG
       NAMES
-        libssl${_OPENSSL_STATIC_SUFFIX}
+        # When OpenSSL is built with default options, the static library name is suffixed with "_static".
+        # Looking the "libssl_static.lib" with a higher priority than "libssl.lib" which is the
+        # import library of "libssl.dll".
+        libssl${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libssl${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libssl${_OPENSSL_STATIC_SUFFIX}d
+        ssleay32${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        ssleay32${_OPENSSL_STATIC_SUFFIX}d
+        ssl${_OPENSSL_STATIC_SUFFIX}d
+        # When OpenSSL is built with the "-static" option, only the static build is produced,
+        # and it is not suffixed with "_static".
+        libssl${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
+        libssl${_OPENSSL_MSVC_RT_MODE}d
+        libssld
+        ssleay32${_OPENSSL_MSVC_RT_MODE}d
+        ssleay32d
+        ssld
       NAMES_PER_DIR
       ${_OPENSSL_ROOT_HINTS_AND_PATHS}
       PATH_SUFFIXES
-        "lib/VC/${_OPENSSL_MSVC_ARCH_DIRECTORY}/${_OPENSSL_MSVC_RT_MODE}d"
+        ${_OPENSSL_PATH_SUFFIXES}
     )
-
-    if(NOT SSL_EAY_DEBUG)
-      find_library(SSL_EAY_DEBUG
-        NAMES
-          # When OpenSSL is built with default options, the static library name is suffixed with "_static".
-          # Looking the "libssl_static.lib" with a higher priority than "libssl.lib" which is the
-          # import library of "libssl.dll".
-          libssl${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libssl${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libssl${_OPENSSL_STATIC_SUFFIX}d
-          ssleay32${_OPENSSL_STATIC_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          ssleay32${_OPENSSL_STATIC_SUFFIX}d
-          ssl${_OPENSSL_STATIC_SUFFIX}d
-          # When OpenSSL is built with the "-static" option, only the static build is produced,
-          # and it is not suffixed with "_static".
-          libssl${_OPENSSL_MSVC_ARCH_SUFFIX}${_OPENSSL_MSVC_RT_MODE}d
-          libssl${_OPENSSL_MSVC_RT_MODE}d
-          libssld
-          ssleay32${_OPENSSL_MSVC_RT_MODE}d
-          ssleay32d
-          ssld
-        NAMES_PER_DIR
-        ${_OPENSSL_ROOT_HINTS_AND_PATHS}
-        PATH_SUFFIXES
-          ${_OPENSSL_PATH_SUFFIXES}
-      )
-    endif()
 
     find_library(SSL_EAY_RELEASE
       NAMES
@@ -482,7 +334,6 @@ if(WIN32 AND NOT CYGWIN)
       ${_OPENSSL_ROOT_HINTS_AND_PATHS}
       PATH_SUFFIXES
         ${_OPENSSL_PATH_SUFFIXES}
-        "lib/VC/${_OPENSSL_MSVC_ARCH_DIRECTORY}/${_OPENSSL_MSVC_RT_MODE}"
     )
 
     set(LIB_EAY_LIBRARY_DEBUG "${LIB_EAY_DEBUG}")
@@ -510,7 +361,6 @@ if(WIN32 AND NOT CYGWIN)
       PATH_SUFFIXES
         "lib/MinGW"
         "lib"
-        "lib64"
     )
 
     find_library(SSL_EAY
@@ -521,7 +371,6 @@ if(WIN32 AND NOT CYGWIN)
       PATH_SUFFIXES
         "lib/MinGW"
         "lib"
-        "lib64"
     )
 
     mark_as_advanced(SSL_EAY LIB_EAY)
@@ -563,7 +412,7 @@ else()
 
   find_library(OPENSSL_SSL_LIBRARY
     NAMES
-      ssl${_OPENSSL_NAME_POSTFIX}
+      ssl
       ssleay32
       ssleay32MD
     NAMES_PER_DIR
@@ -572,19 +421,19 @@ else()
       ${_OPENSSL_LIBDIR}
       ${_OPENSSL_LIBRARY_DIRS}
     PATH_SUFFIXES
-      lib lib64
+      lib
   )
 
   find_library(OPENSSL_CRYPTO_LIBRARY
     NAMES
-      crypto${_OPENSSL_NAME_POSTFIX}
+      crypto
     NAMES_PER_DIR
     ${_OPENSSL_ROOT_HINTS_AND_PATHS}
     HINTS
       ${_OPENSSL_LIBDIR}
       ${_OPENSSL_LIBRARY_DIRS}
     PATH_SUFFIXES
-      lib lib64
+      lib
   )
 
   mark_as_advanced(OPENSSL_CRYPTO_LIBRARY OPENSSL_SSL_LIBRARY)
@@ -653,7 +502,7 @@ if(OPENSSL_INCLUDE_DIR AND EXISTS "${OPENSSL_INCLUDE_DIR}/openssl/opensslv.h")
     from_hex("${OPENSSL_VERSION_FIX}" OPENSSL_VERSION_FIX)
     list(GET OPENSSL_VERSION_LIST 3 OPENSSL_VERSION_PATCH)
 
-    if (NOT OPENSSL_VERSION_PATCH STREQUAL "00")
+    if(NOT OPENSSL_VERSION_PATCH STREQUAL "00")
       from_hex("${OPENSSL_VERSION_PATCH}" _tmp)
       # 96 is the ASCII code of 'a' minus 1
       math(EXPR OPENSSL_VERSION_PATCH_ASCII "${_tmp} + 96")
@@ -722,6 +571,14 @@ find_package_handle_standard_args(OpenSSL
 mark_as_advanced(OPENSSL_INCLUDE_DIR)
 
 if(OPENSSL_FOUND)
+  message(STATUS "Found OpenSSL library: ${OPENSSL_LIBRARIES}")
+  message(STATUS "Found OpenSSL headers: ${OPENSSL_INCLUDE_DIR}")
+  include(EnsureVersion)
+  ENSURE_VERSION_RANGE("${OPENSSL_EXPECTED_VERSION}" "${OPENSSL_VERSION}" "${OPENSSL_MAX_VERSION}" OPENSSL_VERSION_OK)
+  if(NOT OPENSSL_VERSION_OK)
+      message(FATAL_ERROR "ZGNCore needs OpenSSL version ${OPENSSL_EXPECTED_VERSION} but found too new version ${OPENSSL_VERSION}. ZGNCore needs OpenSSL 1.0.x or 1.1.x to work properly. If you still have problems please install OpenSSL 1.0.x if you still have problems search on forum for TCE00022")
+  endif()
+
   if(NOT TARGET OpenSSL::Crypto AND
       (EXISTS "${OPENSSL_CRYPTO_LIBRARY}" OR
         EXISTS "${LIB_EAY_LIBRARY_DEBUG}" OR
@@ -786,7 +643,7 @@ if(OPENSSL_FOUND)
     _OpenSSL_target_add_dependencies(OpenSSL::SSL)
   endif()
 
-  if("${OPENSSL_VERSION_MAJOR}.${OPENSSL_VERSION_MINOR}.${OPENSSL_VERSION_FIX}" VERSION_GREATER_EQUAL "0.9.8")
+  if("${OPENSSL_VERSION_MAJOR}.${OPENSSL_VERSION_MAJOR}.${OPENSSL_VERSION_FIX}" VERSION_GREATER_EQUAL "0.9.8")
     if(MSVC)
       if(EXISTS "${OPENSSL_INCLUDE_DIR}")
         set(_OPENSSL_applink_paths PATHS ${OPENSSL_INCLUDE_DIR})
@@ -813,10 +670,3 @@ endif()
 if(OPENSSL_USE_STATIC_LIBS)
   set(CMAKE_FIND_LIBRARY_SUFFIXES ${_openssl_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
-
-unset(_OPENSSL_FIND_PATH_SUFFIX)
-unset(_OPENSSL_NAME_POSTFIX)
-unset(_OpenSSL_extra_static_deps)
-unset(_OpenSSL_has_dependency_dl)
-unset(_OpenSSL_has_dependency_threads)
-unset(_OpenSSL_has_dependency_zlib)

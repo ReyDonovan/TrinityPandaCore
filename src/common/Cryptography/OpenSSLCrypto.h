@@ -17,30 +17,19 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "MD5.h"
-#include "Common.h"
+#ifndef OPENSSL_CRYPTO_H
+#define OPENSSL_CRYPTO_H
 
-MD5Hash::MD5Hash() : m_ctx(EVP_MD_CTX_new())
+/**
+* A group of functions which setup openssl crypto module to work properly in multithreaded enviroment
+* If not setup properly - it will crash
+*/
+namespace OpenSSLCrypto
 {
-    EVP_DigestInit_ex(m_ctx, EVP_md5(), NULL);
+    /// Needs to be called before threads using openssl are spawned
+    void threadsSetup();
+    /// Needs to be called after threads using openssl are despawned
+    void threadsCleanup();
 }
 
-MD5Hash::~MD5Hash()
-{
-    EVP_MD_CTX_free(m_ctx);
-}
-
-void MD5Hash::UpdateData(const std::string &str)
-{
-    EVP_DigestUpdate(m_ctx, (uint8 const*)str.c_str(), str.length());
-}
-
-void MD5Hash::UpdateData(const uint8* data, size_t len)
-{
-    EVP_DigestUpdate(m_ctx, data, len);
-}
-
-void MD5Hash::Finalize(const uint8* data, uint32 len)
-{
-    EVP_DigestFinal_ex(m_ctx, (uint8*)data, &len);
-}
+#endif

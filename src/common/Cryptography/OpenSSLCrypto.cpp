@@ -17,45 +17,90 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <OpenSSLCrypto.h>
+#include "OpenSSLCrypto.h"
 #include <openssl/crypto.h>
-#include <ace/Thread_Mutex.h>
-#include <vector>
-#include <ace/Thread.h>
+#include <openssl/provider.h>
 
-std::vector<ACE_Thread_Mutex*> cryptoLocks;
+OSSL_PROVIDER* LegacyProvider;
 
-static void lockingCallback(int mode, int type, const char* /*file*/, int /*line*/)
+void OpenSSLCrypto::threadsSetup([[maybe_unused]] boost::filesystem::path const& providerModulePath)
 {
-    if (mode & CRYPTO_LOCK)
-        cryptoLocks[type]->acquire();
-    else
-        cryptoLocks[type]->release();
-}
+#ifdef VALGRIND
+    ValgrindRandomSetup();
+#endif
 
-static void threadIdCallback(CRYPTO_THREADID * id)
-{
-    CRYPTO_THREADID_set_numeric(id, ACE_Thread::self());
-}
-
-void OpenSSLCrypto::threadsSetup()
-{
-    cryptoLocks.resize(CRYPTO_num_locks());
-    for(int i = 0 ; i < CRYPTO_num_locks(); ++i)
-    {
-        cryptoLocks[i] = new ACE_Thread_Mutex();
-    }
-    CRYPTO_THREADID_set_callback(threadIdCallback);
-    CRYPTO_set_locking_callback(lockingCallback);
+#if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
+    OSSL_PROVIDER_set_default_search_path(nullptr, providerModulePath.string().c_str());
+#endif
+    LegacyProvider = OSSL_PROVIDER_try_load(nullptr, "legacy", 1);
 }
 
 void OpenSSLCrypto::threadsCleanup()
 {
-    CRYPTO_set_locking_callback(NULL);
-    CRYPTO_THREADID_set_callback(NULL);
-    for(int i = 0 ; i < CRYPTO_num_locks(); ++i)
-    {
-        delete cryptoLocks[i];
-    }
-    cryptoLocks.resize(0);
+    OSSL_PROVIDER_unload(LegacyProvider);
+    OSSL_PROVIDER_set_default_search_path(nullptr, nullptr);
 }
+
+#ifdef VALGRIND
+#include <openssl/rand.h>
+
+RAND_METHOD const* default_rand;
+
+static int Valgrind_RAND_seed(const void* buf, int num)
+{
+    VALGRIND_DISCARD(VALGRIND_MAKE_MEM_DEFINED(buf, num));
+    return default_rand->seed(buf, num);Add commentMore actions
+}
+
+static int Valgrind_RAND_bytes(unsigned char* buf, int num)
+{
+    int ret = default_rand->bytes(buf, num);
+    VALGRIND_DISCARD(VALGRIND_MAKE_MEM_DEFINED(buf, num));
+    return ret;Add commentMore actions
+}
+
+static void Valgrind_RAND_cleanup(void)Add commentMore actions
+{
+    default_rand->cleanup();
+}
+
+static int Valgrind_RAND_add(const void* buf, int num, double randomness)Add commentMore actions
+{
+    VALGRIND_DISCARD(VALGRIND_MAKE_MEM_DEFINED(buf, num));
+    return default_rand->add(buf, num, randomness);
+}
+
+static int Valgrind_RAND_pseudorand(unsigned char* buf, int num)
+{
+    int ret = default_rand->pseudorand(buf, num);
+    VALGRIND_DISCARD(VALGRIND_MAKE_MEM_DEFINED(buf, num));
+    return ret;
+}
+
+static int Valgrind_RAND_status(void)
+{
+    return default_rand->status();
+}
+
+static RAND_METHOD valgrind_rand;
+
+void ValgrindRandomSetup()
+{
+    memset(&valgrind_rand, 0, sizeof(RAND_METHOD));
+    default_rand = RAND_get_rand_method();
+    if (default_rand->seed)
+        valgrind_rand.seed = &Valgrind_RAND_seed;
+    if (default_rand->bytes)
+        valgrind_rand.bytes = &Valgrind_RAND_bytes;
+    if (default_rand->cleanup)
+        valgrind_rand.cleanup = &Valgrind_RAND_cleanup;
+    if (default_rand->add)
+        valgrind_rand.add = &Valgrind_RAND_add;
+    if (default_rand->pseudorand)
+        valgrind_rand.pseudorand = &Valgrind_RAND_pseudorand;
+    if (default_rand->status)
+        valgrind_rand.status = &Valgrind_RAND_status;
+    RAND_set_rand_method(&valgrind_rand);
+}
+
+#endif

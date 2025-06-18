@@ -49,6 +49,8 @@
 #include "BigNumber.h"
 #include "OpenSSLCrypto.h"
 
+#include <boost/dll/runtime_symbol_info.hpp>
+
 #ifdef _WIN32
 #include <TlHelp32.h>
 #include "ServiceWin32.h"
@@ -163,7 +165,7 @@ void RunAuthserverIfNeed()
 /// Main function
 int Master::Run()
 {
-    OpenSSLCrypto::threadsSetup();
+    OpenSSLCrypto::threadsSetup(boost::dll::program_location().remove_filename());
     BigNumber seed1;
     seed1.SetRand(16 * 8);
 

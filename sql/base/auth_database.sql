@@ -12,9 +12,6 @@ MySQL - 8.0.31 : Database - auth
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`auth` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `auth`;
 
 /*Table structure for table `account` */
 
@@ -25103,7 +25100,7 @@ CREATE TABLE `realmlist` (
 LOCK TABLES `realmlist` WRITE;
 
 insert  into `realmlist`(`id`,`name`,`isengard_shortname`,`address`,`port`,`icon`,`color`,`timezone`,`allowedSecurityLevel`,`population`,`gamebuild`,`flag`,`project_hidden`,`project_enabled`,`project_dbname`,`project_dbworld`,`project_dbarchive`,`project_rates_min`,`project_rates_max`,`project_transfer_level_max`,`project_transfer_items`,`project_transfer_skills_spells`,`project_transfer_glyphs`,`project_transfer_achievements`,`project_server_same`,`project_server_settings`,`project_server_remote_path`,`project_accounts_detach`,`project_setskills_value_max`,`project_chat_enabled`,`project_statistics_enabled`,`project_shortname`) values 
-(1,'Trinity','Trinity','192.168.178.25',8085,0,2,1,0,0,18414,8,0,1,'','','',10,15,80,'IGNORE','IGNORE','IGNORE','IGNORE',0,'','',1,0,0,0,'Trinity');
+(1,'Trinity','Trinity','127.0.0.1',8085,0,2,1,0,0,18414,8,0,1,'','','',10,15,80,'IGNORE','IGNORE','IGNORE','IGNORE',0,'','',1,0,0,0,'Trinity');
 
 UNLOCK TABLES;
 

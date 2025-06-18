@@ -1616,7 +1616,7 @@ class Player : public Unit, public GridObject<Player>
         _activeCheats &= ~command;
     }
 
-     // PlayedTimeReward
+     // TimeIsMoney
     uint32 ptr_Interval;
 
     // Played Time Stuff

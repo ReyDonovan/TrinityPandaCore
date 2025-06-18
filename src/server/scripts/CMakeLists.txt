@@ -1,13 +1,19 @@
-# Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
-# Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
 #
-# This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without
-# modifications, as long as this notice is preserved.
+# This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
 #
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 
 # Enable precompiled headers when using the GCC compiler.
 
@@ -23,20 +29,22 @@ macro(PrepareScripts name out)
 endmacro(PrepareScripts)
 
 if(SCRIPTS)
-  PrepareScripts(Spells PRIVATE_SOURCES)
+
+  PrepareScripts(Battlegrounds PRIVATE_SOURCES)
+  PrepareScripts(BattlePay PRIVATE_SOURCES)
   PrepareScripts(Commands PRIVATE_SOURCES)
   PrepareScripts(Custom PRIVATE_SOURCES)
-  PrepareScripts(World PRIVATE_SOURCES)
-  PrepareScripts(OutdoorPvP PRIVATE_SOURCES)
-  PrepareScripts(Kalimdor PRIVATE_SOURCES)
-  PrepareScripts(Outland PRIVATE_SOURCES)
-  PrepareScripts(Northrend PRIVATE_SOURCES)
-  PrepareScripts(Maelstrom PRIVATE_SOURCES)
-  PrepareScripts(Battlegrounds PRIVATE_SOURCES)
   PrepareScripts(EasternKingdoms PRIVATE_SOURCES)
   PrepareScripts(Events PRIVATE_SOURCES)
+  PrepareScripts(Kalimdor PRIVATE_SOURCES)
+  PrepareScripts(Maelstrom PRIVATE_SOURCES)
+  PrepareScripts(Northrend PRIVATE_SOURCES)
+  PrepareScripts(OutdoorPvP PRIVATE_SOURCES)
+  PrepareScripts(Outland PRIVATE_SOURCES)
   PrepareScripts(Pandaria PRIVATE_SOURCES)
   PrepareScripts(Pet PRIVATE_SOURCES)
+  PrepareScripts(Spells PRIVATE_SOURCES)
+  PrepareScripts(World PRIVATE_SOURCES)
 endif()
 
 message(STATUS "SCRIPT PREPARATION COMPLETE")

@@ -831,8 +831,8 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
         m_bgBattlegroundQueueID[j].invitedToInstance = 0;
     }
 
-    // PlayedTimeReward
-    ptr_Interval = sWorld->getIntConfig(CONFIG_PLAYED_TIME_REWARD) * 1000;
+    // Time is Money
+    ptr_Interval = sWorld->getIntConfig(CONFIG_TIME_IS_MONEY_INTERVAL) * 1000;
 
     m_logintime = time(NULL);
     m_Last_tick = m_logintime;

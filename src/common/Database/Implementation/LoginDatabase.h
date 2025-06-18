@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -153,7 +151,6 @@ enum LoginDatabaseStatements
     LOGIN_SEL_BATTLEPAY_COINS,
 	LOGIN_UPD_BATTLEPAY_INCREMENT_COINS,
 	LOGIN_UPD_BATTLEPAY_DECREMENT_COINS,
-    LOGIN_UPD_BATTLEPAY_VP_COINS,
 
     LOGIN_INS_CURRENCY_TRANSACTIONS,
 

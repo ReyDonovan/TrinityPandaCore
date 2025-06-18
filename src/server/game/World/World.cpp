@@ -1381,8 +1381,9 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[CONFIG_WOW_TOKEN] = sConfigMgr->GetBoolDefault("Wow.Token", false);
 
     // Bonus played time reward
-    m_bool_configs[CONFIG_BONUS_TIME_REWARD] = sConfigMgr->GetBoolDefault("PlayedTimeReward.Enabled", false);
-    m_int_configs[CONFIG_PLAYED_TIME_REWARD] = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 1200);
+    m_bool_configs[CONFIG_TIME_IS_MONEY_ENABLE] = sConfigMgr->GetBoolDefault("TimeIsMoney.Enabled", false);
+    m_int_configs[CONFIG_TIME_IS_MONEY_INTERVAL] = sConfigMgr->GetIntDefault("TimeIsMoney.Interval", 3600);
+    m_int_configs[CONFIG_TIME_IS_MONEY_CREDIT] = sConfigMgr->GetIntDefault("TimeIsMoney.Credit", 1);
 
     //packet spoof punishment
     m_int_configs[CONFIG_PACKET_SPOOF_POLICY] = sConfigMgr->GetIntDefault("PacketSpoof.Policy", (uint32)WorldSession::DosProtection::POLICY_KICK);

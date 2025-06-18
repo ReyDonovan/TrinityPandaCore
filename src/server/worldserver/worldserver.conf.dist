@@ -2764,21 +2764,20 @@ Ilvl.Scaling.PvE = 463
 Ilvl.Scaling.PvP.Enable = true
 Ilvl.Scaling.PvP = 463
 
-#    PlayedTimeReward.Enabled
-#        Description: Enable or disable bonus for time played
+#    TimeIsMoney.Enabled
+#        Description: Enable or disable BattlePay Bonus for time played
 #        Default:   0 - (Disabled)
 #                   1 - (Enabled)
 
-PlayedTimeReward.Enabled = 1
+TimeIsMoney.Enabled = 1
 
-#    PlayedTimeReward.Interval
+#    TimeIsMoney.Interval
 #        Description: Interval of bonus for time played
-#        Default:    1200 - (20 minutes)
-#
-#        PlayedTimeReward.vp = 1 --> 1 voting point
+#        Default:    TimeIsMoney.Interval = 3600 - (60 minutes)
+#        			 TimeIsMoney.Credit = 10000 (1 Credit)
 
-PlayedTimeReward.Interval = 1200
-PlayedTimeReward.vp = 1
+TimeIsMoney.Interval = 3600
+TimeIsMoney.Credit = 10000
 
 #   FirstOfTheKingdom
 #        Description: grants a facility to complete the pandaria bands (need restart)

@@ -1,7 +1,7 @@
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
-+ boost_1_65_1-msvc-14.1-64
++ Boost 1.78
 + MySQL = 8.0 - 8.4 LTS
 + cmake >= 3.24 (Windows / Linux)
 + OpenSSL= 3.x.x

@@ -1,12 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- * Copyright (C) 2006-2014 ScriptDev2 <https://github.com/scriptdev2/scriptdev2/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -17,10 +14,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* Script Data Start
-SDName: Boss Malygos
-Script Data End */
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -449,6 +442,7 @@ public:
 
         void DoAction(int32 action) override
         {
+            Position _zToLift;
             switch (action)
             {
                 case ACTION_LAND_ENCOUNTER_START:
@@ -472,7 +466,6 @@ public:
                     DoCast(me, SPELL_VORTEX_3, true);
                     break;
                 case ACTION_LIFT_IN_AIR:
-                    Position _zToLift;
                     me->GetPosition(&_zToLift);
                     if (_phase == PHASE_ONE)
                     {

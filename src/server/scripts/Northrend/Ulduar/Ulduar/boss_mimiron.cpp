@@ -1,12 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- * Copyright (C) 2006-2014 ScriptDev2 <https://github.com/scriptdev2/scriptdev2/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -1857,6 +1854,7 @@ class boss_aerial_unit : public CreatureScript
 
             void DoAction(int32 action) override
             {
+                Position destination;
                 switch (action)
                 {
                     case DO_START_AERIAL:
@@ -1876,8 +1874,7 @@ class boss_aerial_unit : public CreatureScript
                             DoCast(me, SPELL_MAGNETIC_CORE);
                             DoCast(me, SPELL_MAGNETIC_CORE_VISUAL);
                             // Move to floor.
-                            Position destination;
-                            me->GetPosition(&destination);
+                            destination = me->GetPosition();
                             destination.m_positionZ = 368.965f;
                             me->GetMotionMaster()->MoveLand(1, destination, 5.0f);  // Check if MoveLand is ok here, a flying unit should have a landing animation, but... just 4 the case
                             _events.DelayEvents(20*IN_MILLISECONDS);
@@ -1917,6 +1914,7 @@ class boss_aerial_unit : public CreatureScript
 
                 while (uint32 eventId = _events.ExecuteEvent())
                 {
+                    Position destination;
                     switch (eventId)
                     {
                         case EVENT_PLASMA_BALL:
@@ -1944,8 +1942,7 @@ class boss_aerial_unit : public CreatureScript
                             return;
                         case EVENT_REACTIVATE_AERIAL:
                             me->RemoveAurasDueToSpell(SPELL_MAGNETIC_CORE_VISUAL);
-                            Position destination;
-                            me->GetPosition(&destination);
+                            destination = me->GetPosition();
                             destination.m_positionZ = 380.04f;
                             // FIXME find correct speed
                             me->GetMotionMaster()->MoveTakeoff(1, destination, 5.0f); // Check if MoveTakeoff is ok here, a flying unit should have a landing animation, but... just 4 the case

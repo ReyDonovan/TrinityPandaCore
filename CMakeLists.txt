@@ -12,8 +12,7 @@
 # Set projectname (must be done AFTER setting configurationtypes)
 project(TrinityCore)
 
-# We require CMake >= 3.18
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.24)
 
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)

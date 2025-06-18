@@ -17,8 +17,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SF_PLAYER_H
-#define SF_PLAYER_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include "DBCStores.h"
 #include "GroupReference.h"
@@ -1952,6 +1952,7 @@ class Player : public Unit, public GridObject<Player>
     bool CanCompleteRepeatableQuest(Quest const* quest);
     bool CanRewardQuest(Quest const* quest, bool msg);
     bool CanRewardQuest(Quest const* quest, uint32 reward, bool msg);
+    void AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver);
     void AddQuest(Quest const* quest, Object* questGiver);
     void CompleteQuest(uint32 quest_id, bool completely = false, bool fromCommand = false);
     void IncompleteQuest(uint32 quest_id);

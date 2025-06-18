@@ -17,8 +17,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SC_SCRIPTMGR_H
-#define SC_SCRIPTMGR_H
+#ifndef SCRIPTMGR_H
+#define SCRIPTMGR_H
 
 #include "Common.h"
 #include <ace/Singleton.h>
@@ -800,6 +800,9 @@ class PlayerScript : public UnitScript
 
         // Called when a player selects an option in a player gossip window
         virtual void OnGossipSelectCode(Player* /*player*/, uint32 /*menu_id*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/) { }
+
+        // Called when player accepts some quest
+        virtual void OnQuestAccept(Player* /*player*/, Quest const* /*quest*/) {}
 };
 
 class GuildScript : public ScriptObject
@@ -1036,6 +1039,7 @@ class ScriptMgr
         bool OnItemPickup(Player* player, Item* item, ItemPickupSourceType sourceType, uint32 sourceId);
         void OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action);
         void OnGossipSelectCode(Player* player, Item* item, uint32 sender, uint32 action, const char* code);
+        void OnQuestAccept(Player* player, const Quest* quest);
 
     public: /* CreatureScript */
 

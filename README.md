@@ -2,7 +2,7 @@
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
 + boost_1_65_1-msvc-14.1-64
-+ MySQL = 8.0 (included for Windows)
++ MySQL = 8.0 - 8.4 LTS
 + cmake >= 3.18.0-win64-x64 (Windows / Linux)
 + OpenSS L= Win64OpenSSL-1.1.1
 + MS Visual Studio = 17 (2022) (Windows only)

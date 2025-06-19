@@ -152,6 +152,9 @@ enum Spells
     SPELL_VENGEFUL_SPIRIT_2         = 138043, // Needs SPELL_SPIRIT_CHARM to be casted
     SPELL_THUNDER_CRUSH             = 138044, // Needs SPELL_THUNDERING_SIGIL to be casted
 
+    // Shan'ze Thundercaller
+    SPELL_CALL_OF_THUNDER           = 136789,
+
     // Misc | Trash
     SPELL_SINISTER_STRIKE           = 129040,
     SPELL_SUNDER_ARMOR              = 76622,
@@ -332,6 +335,8 @@ enum Creatures
     NPC_ADDIT_SHANZE_SOULRIPPER = 69903,
     NPC_GEN_CONTROLLER_BUNNY    = 40789,
     NPC_PUZZLE_BUNNY            = 70311,
+    NPC_LIGHTNING_RITUAL_BUNNY  = 69369,
+    NPC_KULANS_SPEAR            = 69367,
 
     /*Credits*/
     CREDIT_LORTHEMAR_THERON     = 70365,
@@ -1982,14 +1987,14 @@ struct npc_shanze_thundercaller : public customCreatureAI
 
         if (questCreatures)
         {
-            Creature* spear = me->FindNearestCreature(69367, 30.0f);
+            // Temp summon Kulan's Spear
+            Creature* spear = me->FindNearestCreature(NPC_KULANS_SPEAR, 30.0f);
             if (!spear)
-            {
-                if (spear = me->SummonCreature(69367, 6604.359f, 6291.149f, 5.067f, 3.553f))
-                    DoCast(spear, 136789);
-            }
-            else
-                DoCast(spear, 136789);
+                spear = me->SummonCreature(NPC_KULANS_SPEAR, 6604.359f, 6291.149f, 5.067f, 3.553f);
+
+            // Cast Call of Thunder on Lightning Ritual Bunny
+            Creature* lightningbunny = me->FindNearestCreature(NPC_LIGHTNING_RITUAL_BUNNY, 40.0f);
+            DoCast(lightningbunny, SPELL_CALL_OF_THUNDER);
         }
     }
 
@@ -1997,14 +2002,14 @@ struct npc_shanze_thundercaller : public customCreatureAI
     {
         if (questCreatures)
         {
-            Creature* spear = me->FindNearestCreature(69367, 30.0f);
+            // Temp summon Kulan's Spear
+            Creature* spear = me->FindNearestCreature(NPC_KULANS_SPEAR, 30.0f);
             if (!spear)
-            {
-                if (spear = me->SummonCreature(69367, 6604.359f, 6291.149f, 5.067f, 3.553f))
-                    DoCast(spear, 136789);
-            }
-            else
-                DoCast(spear, 136789);
+                spear = me->SummonCreature(NPC_KULANS_SPEAR, 6604.359f, 6291.149f, 5.067f, 3.553f);
+
+            // Cast Call of Thunder on Lightning Ritual Bunny
+            Creature* lightningbunny = me->FindNearestCreature(NPC_LIGHTNING_RITUAL_BUNNY, 40.0f);
+            DoCast(lightningbunny, SPELL_CALL_OF_THUNDER);
         }
     }
 
@@ -2021,15 +2026,15 @@ struct npc_shanze_thundercaller : public customCreatureAI
     {
         if (questCreatures)
         {
-            if (Creature* spear = me->FindNearestCreature(69367, 30.0f))
+            if (Creature* lightningbunny = me->FindNearestCreature(NPC_LIGHTNING_RITUAL_BUNNY, 40.0f))
             {
-                if (!spear->HasAura(136789))
+                if (!lightningbunny->HasAura(SPELL_CALL_OF_THUNDER))
                 {
                     std::list<Player*> playersForQuest;
                     GetPlayerListInGrid(playersForQuest, me, 40.0f);
 
                     for (auto&& player : playersForQuest)
-                        player->KilledMonsterCredit(69369);
+                        player->KilledMonsterCredit(NPC_LIGHTNING_RITUAL_BUNNY);
                 }
             }
         }
@@ -3872,7 +3877,7 @@ class spell_reverberating_smash : public SpellScript
     }
 };
 
-class ReverberatingSmashRangePredicate
+class ReverberatingSmashRangePredicate : public std::binary_function<uint32, WorldLocation const*, bool>
 {
     public:
         ReverberatingSmashRangePredicate(uint32 const& spell_id, WorldLocation const* m_pos) : _spell_id(spell_id), _pos(m_pos) { }

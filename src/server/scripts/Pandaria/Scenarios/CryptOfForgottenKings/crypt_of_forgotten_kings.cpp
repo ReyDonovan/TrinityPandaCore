@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "crypt_of_forgotten_kings.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
@@ -1287,7 +1304,7 @@ class AreaTrigger_at_crypt_behind_abomination : public AreaTriggerScript
     public:
         AreaTrigger_at_crypt_behind_abomination() : AreaTriggerScript("AreaTrigger_at_crypt_behind_abomination") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1319,7 +1336,7 @@ class AreaTrigger_at_crypt_steam_trap : public AreaTriggerScript
     public:
         AreaTrigger_at_crypt_steam_trap() : AreaTriggerScript("AreaTrigger_at_crypt_steam_trap") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             player->CastSpell(player, SPELL_KNOCKBACK_TRAP, true);
             return false;
@@ -1332,7 +1349,7 @@ class AreaTrigger_at_crypt_quilen_trap : public AreaTriggerScript
     public:
         AreaTrigger_at_crypt_quilen_trap() : AreaTriggerScript("AreaTrigger_at_crypt_quilen_trap") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* Quilen = player->FindNearestCreature(NPC_QUILEN_STATUE, 15.0f, true))
             {

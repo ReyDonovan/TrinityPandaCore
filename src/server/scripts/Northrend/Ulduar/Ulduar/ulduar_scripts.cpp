@@ -1,12 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- * Copyright (C) 2006-2014 ScriptDev2 <https://github.com/scriptdev2/scriptdev2/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -1778,10 +1775,10 @@ class at_ulduar_event_areatrigger : public AreaTriggerScript
     public:
         at_ulduar_event_areatrigger() : AreaTriggerScript("at_ulduar_event_areatrigger") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
-                instance->SetData(DATA_AREATRIGGER_EVENT, trigger->id);
+                instance->SetData(DATA_AREATRIGGER_EVENT, areaTrigger->id);
 
             return true;
         }

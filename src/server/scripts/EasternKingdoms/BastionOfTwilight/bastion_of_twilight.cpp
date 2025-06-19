@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include"ScriptPCH.h"
 #include "bastion_of_twilight.h"
 
@@ -1856,7 +1873,7 @@ class at_bt_entrance : public AreaTriggerScript
     public:
         at_bt_entrance() : AreaTriggerScript("at_bt_entrance") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1879,7 +1896,7 @@ class at_bt_halfus: public AreaTriggerScript
     public:
         at_bt_halfus() : AreaTriggerScript("at_bt_halfus") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1900,7 +1917,7 @@ class at_bt_valiona_theralion : public AreaTriggerScript
     public:
         at_bt_valiona_theralion() : AreaTriggerScript("at_bt_valiona_theralion") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1921,7 +1938,7 @@ class at_bt_council_1 : public AreaTriggerScript
     public:
         at_bt_council_1() : AreaTriggerScript("at_bt_council_1") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1942,7 +1959,7 @@ class at_bt_council_2 : public AreaTriggerScript
     public:
         at_bt_council_2() : AreaTriggerScript("at_bt_council_2") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1963,7 +1980,7 @@ class at_bt_council_3 : public AreaTriggerScript
     public:
         at_bt_council_3() : AreaTriggerScript("at_bt_council_3") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1984,7 +2001,7 @@ class at_bt_chogall : public AreaTriggerScript
     public:
         at_bt_chogall() : AreaTriggerScript("at_bt_chogall") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -2005,7 +2022,7 @@ class at_bt_sinestra : public AreaTriggerScript
     public:
         at_bt_sinestra() : AreaTriggerScript("at_bt_sinestra") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {

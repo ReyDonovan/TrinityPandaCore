@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptedCreature.h"
 #include "siege_of_orgrimmar.h"
 #include "ScriptMgr.h"
@@ -5989,7 +6006,7 @@ class AreaTrigger_at_siege_of_orgrimmar_entrance : public AreaTriggerScript
     public:
         AreaTrigger_at_siege_of_orgrimmar_entrance() : AreaTriggerScript("AreaTrigger_at_siege_of_orgrimmar_entrance") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* lorewalkerCho = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_LOREWALKER_CHO) : 0))
                 lorewalkerCho->AI()->DoAction(ACTION_START_INTRO);
@@ -6004,7 +6021,7 @@ class AreaTrigger_at_siege_of_orgrimmar_corrupted_waters : public AreaTriggerScr
     public:
         AreaTrigger_at_siege_of_orgrimmar_corrupted_waters() : AreaTriggerScript("AreaTrigger_at_siege_of_orgrimmar_corrupted_waters") { }
     
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* lorewalkerCho = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_LOREWALKER_CHO) : 0))
                 lorewalkerCho->AI()->DoAction(ACTION_UNDER_TORMENTED);
@@ -6019,7 +6036,7 @@ class AreaTrigger_at_soo_vault_of_yshaarj_entrance : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_vault_of_yshaarj_entrance() : AreaTriggerScript("AreaTrigger_at_soo_vault_of_yshaarj_entrance") { }
     
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* norushen = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_NORUSHEN) : 0))
                 norushen->AI()->DoAction(ACTION_START_INTRO);
@@ -6034,7 +6051,7 @@ class AreaTrigger_at_soo_forward_valley_of_strength : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_valley_of_strength() : AreaTriggerScript("AreaTrigger_at_soo_forward_valley_of_strength") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* aysa = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_OVERSEER_KOMAK) : 0))
                 aysa->AI()->DoAction(ACTION_START_INTRO);
@@ -6049,7 +6066,7 @@ class AreaTrigger_at_soo_forward_dark_korkron_shamans : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_dark_korkron_shamans() : AreaTriggerScript("AreaTrigger_at_soo_forward_dark_korkron_shamans") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* eitrigg = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_EITRIGG) : 0))
                 eitrigg->AI()->DoAction(ACTION_START_INTRO);
@@ -6064,7 +6081,7 @@ class AreaTrigger_at_soo_behind_galakras : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_behind_galakras() : AreaTriggerScript("AreaTrigger_at_soo_behind_galakras") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetInstanceScript() && player->GetInstanceScript()->GetBossState(DATA_GALAKRAS) == DONE)
                 return false;
@@ -6084,7 +6101,7 @@ class AreaTrigger_at_soo_forward_iron_juggernaut : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_iron_juggernaut() : AreaTriggerScript("AreaTrigger_at_soo_forward_iron_juggernaut") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* voljin = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_VOLJIN) : 0))
                 voljin->AI()->DoAction(ACTION_START_INTRO);
@@ -6099,7 +6116,7 @@ class AreaTrigger_at_soo_behind_dark_korkron_shamans : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_behind_dark_korkron_shamans() : AreaTriggerScript("AreaTrigger_at_soo_behind_dark_korkron_shamans") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* runthak = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_OVERLORD_RUNTHAK) : 0))
                 runthak->AI()->DoAction(ACTION_START_INTRO);
@@ -6114,7 +6131,7 @@ class AreaTrigger_at_soo_forward_cleft_of_shadow : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_cleft_of_shadow() : AreaTriggerScript("AreaTrigger_at_soo_forward_cleft_of_shadow") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* groldar = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_GROLDAR) : 0))
                 groldar->AI()->DoAction(ACTION_START_INTRO);
@@ -6129,7 +6146,7 @@ class AreaTrigger_at_soo_forward_malkorok : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_malkorok() : AreaTriggerScript("AreaTrigger_at_soo_forward_malkorok") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* malkorok = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(DATA_MALKOROK) : 0))
                 malkorok->AI()->DoAction(ACTION_START_INTRO);
@@ -6144,7 +6161,7 @@ class AreaTrigger_at_soo_forward_thok_bloodthirsty : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_thok_bloodthirsty() : AreaTriggerScript("AreaTrigger_at_soo_forward_thok_bloodthirsty") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* thok = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(DATA_THOK_THE_BLOODTHIRSTY) : 0))
                 thok->AI()->DoAction(ACTION_START_INTRO);
@@ -6159,7 +6176,7 @@ class AreaTrigger_at_soo_forward_garrosh_hellscream : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_garrosh_hellscream() : AreaTriggerScript("AreaTrigger_at_soo_forward_garrosh_hellscream") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* thrall = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_THRALL_GARROSH_EVENT) : 0))
                 thrall->AI()->DoAction(ACTION_START_INTRO);
@@ -6174,7 +6191,7 @@ class AreaTrigger_at_soo_behind_malkorok : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_behind_malkorok() : AreaTriggerScript("AreaTrigger_at_soo_behind_malkorok") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* korkronGunnerRP = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_KORKRON_GUNNER_RP) : 0))
                 korkronGunnerRP->AI()->DoAction(ACTION_START_INTRO);
@@ -6189,7 +6206,7 @@ class AreaTrigger_at_soo_forward_paragon_chamber : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_paragon_chamber() : AreaTriggerScript("AreaTrigger_at_soo_forward_paragon_chamber") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* saurfang = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_OVERLORD_SAURFANG) : 0))
                 saurfang->AI()->DoAction(ACTION_START_INTRO);
@@ -6208,7 +6225,7 @@ class AreaTrigger_at_soo_forward_korkron_barracks : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_forward_korkron_barracks() : AreaTriggerScript("AreaTrigger_at_soo_forward_korkron_barracks") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* farseer = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_KORKRON_DARK_FARSEER) : 0))
                 farseer->AI()->DoAction(ACTION_START_INTRO);
@@ -6223,7 +6240,7 @@ class AreaTrigger_at_soo_forward_korkron_skullsplitter : public AreaTriggerScrip
     public:
         AreaTrigger_at_soo_forward_korkron_skullsplitter() : AreaTriggerScript("AreaTrigger_at_soo_forward_korkron_skullsplitter") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* farseer = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_KORKRON_DARK_FARSEER + 1) : 0))
                 farseer->AI()->DoAction(ACTION_CORRUPTED_SKULLSPLITTER);
@@ -6238,7 +6255,7 @@ class AreaTrigger_at_soo_forward_korkron_cage_prisoners : public AreaTriggerScri
     public:
         AreaTrigger_at_soo_forward_korkron_cage_prisoners() : AreaTriggerScript("AreaTrigger_at_soo_forward_korkron_cage_prisoners") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* cagePrisoner = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_DOYODA) : 0))
                 cagePrisoner->AI()->DoAction(ACTION_CAGE_PRISONERS_INTRO);

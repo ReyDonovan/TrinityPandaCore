@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "blood_in_the_snow.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
@@ -1384,7 +1401,7 @@ class AreaTrigger_at_bloodsnow_grimbolt : public AreaTriggerScript
     public:
         AreaTrigger_at_bloodsnow_grimbolt() : AreaTriggerScript("AreaTrigger_at_bloodsnow_grimbolt") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Creature* grimbolt = ObjectAccessor::GetCreature(*player, player->GetInstanceScript() ? player->GetInstanceScript()->GetData64(NPC_MOUNTAINER_GRIMBOLT) : 0))
                 grimbolt->AI()->DoAction(ACTION_START_INTRO);

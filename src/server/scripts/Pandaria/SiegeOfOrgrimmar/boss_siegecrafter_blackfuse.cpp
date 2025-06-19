@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "siege_of_orgrimmar.h"
@@ -2348,7 +2365,7 @@ class AreaTrigger_at_soo_conveyor : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_conveyor() : AreaTriggerScript("AreaTrigger_at_soo_conveyor") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             player->RemoveAurasDueToSpell(SPELL_CRAWLER_MINE_FIXATE_AURA);
 
@@ -3209,7 +3226,7 @@ class AreaTrigger_at_soo_pipelines_to_conveyor : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_pipelines_to_conveyor() : AreaTriggerScript("AreaTrigger_at_soo_pipelines_to_conveyor") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             // Prevent conveyor jump if encounter not started
             if (player->GetInstanceScript() && player->GetInstanceScript()->GetBossState(DATA_SIEGECRAFTER_BLACKFUSE) != IN_PROGRESS)
@@ -3244,7 +3261,7 @@ class AreaTrigger_at_soo_pipelines_from_conveyor : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_pipelines_from_conveyor() : AreaTriggerScript("AreaTrigger_at_soo_pipelines_from_conveyor") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (!player->HasAura(SPELL_PIPE_TRANSFERT_CONVEYOR_TO_PLATFORM))
                 player->CastSpell(player, SPELL_PIPE_TRANSFERT_CONVEYOR_TO_PLATFORM, true);
@@ -3259,7 +3276,7 @@ class AreaTrigger_at_soo_pipelines_down : public AreaTriggerScript
     public:
         AreaTrigger_at_soo_pipelines_down() : AreaTriggerScript("AreaTrigger_at_soo_pipelines_down") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             player->Kill(player);
 
@@ -3277,7 +3294,7 @@ class AreaTrigger_at_soo_pipelines_from_underhold_to_platform : public AreaTrigg
     public:
         AreaTrigger_at_soo_pipelines_from_underhold_to_platform() : AreaTriggerScript("AreaTrigger_at_soo_pipelines_from_underhold_to_platform") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetInstanceScript() && (player->GetInstanceScript()->GetBossState(DATA_SIEGECRAFTER_BLACKFUSE) == IN_PROGRESS || player->GetInstanceScript()->GetData(DATA_SIEGECRAFTER_PRE_EVENT) != DONE))
             {
@@ -3301,7 +3318,7 @@ class AreaTrigger_at_soo_pipelines_from_platform_to_underhold : public AreaTrigg
     public:
         AreaTrigger_at_soo_pipelines_from_platform_to_underhold() : AreaTriggerScript("AreaTrigger_at_soo_pipelines_from_platform_to_underhold") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetInstanceScript() && player->GetInstanceScript()->GetBossState(DATA_SIEGECRAFTER_BLACKFUSE) == IN_PROGRESS)
             {

@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
@@ -2423,9 +2440,9 @@ class AreaTrigger_at_q_wood_and_shade : public AreaTriggerScript
     public:
         AreaTrigger_at_q_wood_and_shade() : AreaTriggerScript("at_q_wood_and_shade") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
-            if (trigger->id == 8124)
+            if (areaTrigger->id == 8124)
                 player->KilledMonsterCredit(62955);
             else
                 player->KilledMonsterCredit(62956);
@@ -2674,7 +2691,7 @@ class AreaTrigger_q31185 : public AreaTriggerScript
     public:
         AreaTrigger_q31185() : AreaTriggerScript("AreaTrigger_q31185") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
             if (player->GetQuestStatus(QUEST_WALKING_DOG) != QUEST_STATUS_INCOMPLETE)
                 return true;
@@ -2690,7 +2707,7 @@ class AreaTrigger_q31185 : public AreaTriggerScript
             if (player->GetDistance(dog) > 10.0f)
                 return true;
 
-            switch (trigger->id)
+            switch (areaTrigger->id)
             {
                 case AT_SILT_VENS:
                     if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_SILT_VENS))
@@ -3239,7 +3256,7 @@ class AreaTrigger_q31087 : public AreaTriggerScript
     public:
         AreaTrigger_q31087() : AreaTriggerScript("AreaTrigger_q31087") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetQuestStatus(31087) != QUEST_STATUS_INCOMPLETE)
                 return true;

@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "isle_of_thunder.h"
 #include "CreatureTextMgr.h"
 #include "Vehicle.h"
@@ -6611,7 +6628,7 @@ class AreaTrigger_at_thunder_forge_to_skies : public AreaTriggerScript
     public:
         AreaTrigger_at_thunder_forge_to_skies() : AreaTriggerScript("AreaTrigger_at_thunder_forge_to_skies") { }
     
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetInstanceScript() && player->GetInstanceScript()->GetData(STEP_WAS_YOURS_BECOME_MINE) != DONE)
             {
@@ -6632,7 +6649,7 @@ class AreaTrigger_at_shanbu_fall : public AreaTriggerScript
     public:
         AreaTrigger_at_shanbu_fall() : AreaTriggerScript("AreaTrigger_at_shanbu_fall") { }
     
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetInstanceScript() && player->GetInstanceScript()->GetData(STEP_BLOODY_CROSSROAD) < IN_PROGRESS && player->GetInstanceScript()->GetData64(PHASE_DATA) == SCENARIO_FALL_OF_SHANBU)
                 player->GetInstanceScript()->SetData(STEP_BLOODY_CROSSROAD, IN_PROGRESS);

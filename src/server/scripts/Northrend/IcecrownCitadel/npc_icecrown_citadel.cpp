@@ -1,4 +1,19 @@
-/* I-core */
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "ScriptPCH.h"
 #include "icecrown_citadel.h"
@@ -2800,7 +2815,7 @@ class at_nerubar_trigger : public AreaTriggerScript
     public:
         at_nerubar_trigger(bool first, char const* name) : AreaTriggerScript(name), _first(first) { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             std::list<Creature*> nerubar;
             GetCreatureListWithEntryInGrid(nerubar, player, NPC_NERUBAR_BROODKEEPER, 200.0f);
@@ -2830,7 +2845,7 @@ class at_icc_start_the_damned_assault : public AreaTriggerScript
     public:
         at_icc_start_the_damned_assault() : AreaTriggerScript("at_icc_start_the_damned_assault") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             std::list<Creature*> damned;
             GetCreatureListWithEntryInGrid(damned, player, NPC_THE_DAMNED, 300.0f);

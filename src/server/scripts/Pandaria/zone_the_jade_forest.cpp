@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
@@ -2917,7 +2934,7 @@ class AreaTrigger_q29586 : public AreaTriggerScript
     public:
         AreaTrigger_q29586() : AreaTriggerScript("AreaTrigger_q29586") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetQuestStatus(QUEST_THE_SPLINTED_PATH) != QUEST_STATUS_INCOMPLETE || player->FindNearestCreature(NPC_GORMALI_STALKER, 150.0f, true))
                 return false;
@@ -4377,7 +4394,7 @@ class at_cave_of_words : public AreaTriggerScript
     public:
         at_cave_of_words() : AreaTriggerScript("at_cave_of_words") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (!player->isDead() && player->GetQuestStatus(29822) == QUEST_STATUS_COMPLETE)
             {
@@ -4397,7 +4414,7 @@ class AreaTrigger_at_groundkeepers_wu : public AreaTriggerScript
     public:
         AreaTrigger_at_groundkeepers_wu() : AreaTriggerScript("AreaTrigger_at_groundkeepers_wu") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (Aura* cauldron = player->GetAura(SPELL_CAULDRON_ROPE))
             {
@@ -4421,7 +4438,7 @@ class AreaTrigger_at_mother_wu : public AreaTriggerScript
     public:
         AreaTrigger_at_mother_wu() : AreaTriggerScript("AreaTrigger_at_mother_wu") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (player->GetQuestStatus(QUEST_A_STRONG_BACK) == QUEST_STATUS_INCOMPLETE && !player->HasAura(SPELL_CAULDRON_ROPE))
                 if (Creature* motherWu = player->FindNearestCreature(NPC_MOTHER_WU, 50.0f, true))

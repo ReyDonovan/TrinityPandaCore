@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptPCH.h"
 #include "Vehicle.h"
 #include "well_of_eternity.h"
@@ -2491,7 +2508,7 @@ class at_well_of_eternity_intro : public AreaTriggerScript
     public:
         at_well_of_eternity_intro() : AreaTriggerScript("at_well_of_eternity_intro") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -2511,7 +2528,7 @@ class at_well_of_eternity_skip_illidan_intro : public AreaTriggerScript
     public:
         at_well_of_eternity_skip_illidan_intro() : AreaTriggerScript("at_well_of_eternity_skip_illidan_intro") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
                 if (instance->GetData(DATA_EVENT_ILLIDAN_1) == NOT_STARTED)
@@ -2526,7 +2543,7 @@ class at_well_of_eternity_perotharn_preevent_appear : public AreaTriggerScript
     public:
         at_well_of_eternity_perotharn_preevent_appear() : AreaTriggerScript("at_well_of_eternity_perotharn_preevent_appear") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
                 if (instance->GetData(DATA_EVENT_ILLIDAN_1) == DONE && instance->GetBossState(DATA_PEROTHARN) == NOT_STARTED)
@@ -2542,7 +2559,7 @@ class at_well_of_eternity_illidan_outro_resume : public AreaTriggerScript
     public:
         at_well_of_eternity_illidan_outro_resume() : AreaTriggerScript("at_well_of_eternity_illidan_outro_resume") { }
 
-        bool OnTrigger(Player* player, const AreaTriggerEntry* /*trigger*/) override
+        bool OnTrigger(Player* player, const AreaTriggerEntry* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
                 if (instance->GetData(DATA_EVENT_ILLIDAN_1) == DONE && instance->GetBossState(DATA_PEROTHARN) == DONE)

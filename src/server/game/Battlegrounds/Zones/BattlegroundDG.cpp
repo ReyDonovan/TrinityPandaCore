@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "BattlegroundDG.h"
 #include "Player.h"
 #include "Language.h"
@@ -791,7 +808,7 @@ void BattlegroundDG::EventPlayerClickedOnFlag(Player* player, GameObject* gameOb
     player->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
 }
 
-void BattlegroundDG::HandleAreaTrigger(Player* player, uint32 triggerId)
+void BattlegroundDG::HandleAreaTrigger(Player* player, uint32 triggerId, bool entered)
 {
     switch (triggerId)
     {
@@ -823,7 +840,7 @@ void BattlegroundDG::HandleAreaTrigger(Player* player, uint32 triggerId)
                 triggerId, player->GetName().c_str(), GUID_LOPART(player->GetGUID()));
             break;
         default:
-            Battleground::HandleAreaTrigger(player, triggerId);
+            Battleground::HandleAreaTrigger(player, triggerId, entered);
             break;
     }
 }

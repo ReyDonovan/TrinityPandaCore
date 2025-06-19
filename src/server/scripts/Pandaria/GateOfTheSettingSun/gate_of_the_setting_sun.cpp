@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "gate_of_the_setting_sun.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -1406,7 +1423,7 @@ class AreaTrigger_at_destroy_corner_a : public AreaTriggerScript
     public:
         AreaTrigger_at_destroy_corner_a() : AreaTriggerScript("at_destroy_corner_a") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1431,7 +1448,7 @@ class AreaTrigger_at_destroy_corner_b: public AreaTriggerScript
     public:
         AreaTrigger_at_destroy_corner_b() : AreaTriggerScript("at_destroy_corner_b") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
                 if (instance->GetData(DATA_CORNER_B) != DONE)
@@ -1449,7 +1466,7 @@ class AreaTrigger_at_before_gadok : public AreaTriggerScript
     public:
         AreaTrigger_at_before_gadok() : AreaTriggerScript("at_before_gadok") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
@@ -1488,7 +1505,7 @@ class AreaTrigger_at_intro_gadok : public AreaTriggerScript
     public:
         AreaTrigger_at_intro_gadok() : AreaTriggerScript("at_intro_gadok") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/, bool /*entered*/) override
         {
                 if (InstanceScript* instance = player->GetInstanceScript())
                     if (Creature* gadok = Unit::GetCreature(*player, instance->GetData64(DATA_GADOK)))

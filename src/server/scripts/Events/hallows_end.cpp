@@ -1,3 +1,20 @@
+/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "Player.h"
@@ -1176,9 +1193,9 @@ class at_shopping_around : public AreaTriggerScript
     public:
         at_shopping_around() : AreaTriggerScript("at_shopping_around") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
-            if (trigger->id == 6922 && player->GetQuestStatus(29425) == QUEST_STATUS_INCOMPLETE)
+            if (areaTrigger->id == 6922 && player->GetQuestStatus(29425) == QUEST_STATUS_INCOMPLETE)
             {
                 Creature* delian = player->FindNearestCreature(54146, 50.0f);
                 Creature* dran = player->FindNearestCreature(6986, 50.0f);
@@ -1204,7 +1221,7 @@ class at_shopping_around : public AreaTriggerScript
                 }
             }
 
-            if (trigger->id == 6914 && player->GetQuestStatus(29399) == QUEST_STATUS_INCOMPLETE)
+            if (areaTrigger->id == 6914 && player->GetQuestStatus(29399) == QUEST_STATUS_INCOMPLETE)
             {
                 Creature* hudson = player->FindNearestCreature(54021, 50.0f);
                 Creature* quincy = player->FindNearestCreature(53991, 50.0f);
@@ -1239,7 +1256,7 @@ class at_the_collectors_agent : public AreaTriggerScript
     public:
         at_the_collectors_agent() : AreaTriggerScript("at_the_collectors_agent") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
             if (player->GetQuestStatus(29427) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(29403) == QUEST_STATUS_INCOMPLETE)
             {
@@ -1256,12 +1273,12 @@ class at_the_collectors_agent : public AreaTriggerScript
                             sanath->SetStandState(UNIT_STAND_STATE_KNEEL);
                             sanath->HandleEmoteStateCommand(EMOTE_STATE_USE_STANDING);
                         });
-                        sanath->m_Events.Schedule(25000, [sanath, guid, trigger]()
+                        sanath->m_Events.Schedule(25000, [sanath, guid, areaTrigger]()
                         {
                             sanath->SetStandState(UNIT_STAND_STATE_STAND);
                             sanath->HandleEmoteStateCommand(EMOTE_ONESHOT_NONE);
 
-                            Position pos = trigger->id == 6924 ? Position({ 1579.189f, 61.371f, 62.5377f, 6.26843f }) : Position({ -8496.792f, 758.109f, 72.758f, 2.210720f });
+                            Position pos = areaTrigger->id == 6924 ? Position({ 1579.189f, 61.371f, 62.5377f, 6.26843f }) : Position({ -8496.792f, 758.109f, 72.758f, 2.210720f });
                             if (Creature* uvoid = sanath->SummonCreature(54114, pos, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, MINUTE * 2 * IN_MILLISECONDS))
                                 if (Player* player = sObjectAccessor->GetPlayer(*sanath, guid))
                                     uvoid->Attack(player, true);

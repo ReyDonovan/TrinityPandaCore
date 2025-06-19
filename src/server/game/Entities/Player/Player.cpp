@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -819,7 +817,6 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
     m_MirrorTimerFlagsLast = UNDERWATER_NONE;
     m_isInWater = false;
     m_drunkTimer = 0;
-    m_restTime = 0;
     m_deathTimer = 0;
     m_deathExpireTime = 0;
 
@@ -848,10 +845,10 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
     m_lastpetnumber = 0;
 
     ////////////////////Rest System/////////////////////
-    time_inn_enter = 0;
+    _restTime = 0;
     inn_triggerId = 0;
     m_rest_bonus = 0;
-    rest_type=REST_TYPE_NO;
+    _restFlagMask = 0;
     ////////////////////Rest System/////////////////////
 
     m_mailsLoaded = false;
@@ -1828,15 +1825,20 @@ void Player::Update(uint32 p_time)
 
     if (HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING))
     {
-        if (roll_chance_i(3) && GetTimeInnEnter() > 0)      // freeze update
+        if (roll_chance_i(3) && _restTime > 0)      // freeze update
         {
-            time_t time_inn = time(NULL)-GetTimeInnEnter();
-            if (time_inn >= 10)                             // freeze update
+            time_t currTime = time(nullptr);
+            time_t timeDiff = currTime - _restTime;
+            if (timeDiff >= 10)                               // freeze update
             {
-                float bubble = 0.125f*sWorld->getRate(RATE_REST_INGAME);
-                                                            // speed collect rest bonus (section/in hour)
-                SetRestBonus(GetRestBonus()+ time_inn*((float)GetUInt32Value(PLAYER_FIELD_NEXT_LEVEL_XP)/72000)*bubble);
-                UpdateInnerTime(time(NULL));
+                _restTime = currTime;
+
+                float bubble = 0.125f * sWorld->getRate(RATE_REST_INGAME);
+                float extraPerSec = ((float)GetUInt32Value(PLAYER_FIELD_NEXT_LEVEL_XP) / 72000.0f) * bubble;
+
+                // speed collect rest bonus (section/in hour)
+                float currRestBonus = GetRestBonus();
+                SetRestBonus(currRestBonus + timeDiff * extraPerSec);
             }
         }
     }
@@ -1883,14 +1885,11 @@ void Player::Update(uint32 p_time)
         if (p_time >= m_zoneUpdateTimer)
         {
             // On zone update tick check if we are still in an inn if we are supposed to be in one
-            if (HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING) && GetRestType() == REST_TYPE_IN_TAVERN)
+            if (HasRestFlag(REST_FLAG_IN_TAVERN))
             {
                 AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(GetInnTriggerId());
                 if (!atEntry || !IsInAreaTriggerRadius(atEntry))
-                {
-                    RemoveFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-                    SetRestType(REST_TYPE_NO);
-                }
+                    RemoveRestFlag(REST_FLAG_IN_TAVERN);
             }
 
             uint32 newzone, newarea;
@@ -2105,12 +2104,6 @@ void Player::setDeathState(DeathState s)
             m_alternateRegenTimerCount = 0;
         }
     }
-}
-
-void Player::InnEnter(time_t time, uint32 triggerId)
-{
-    inn_triggerId = triggerId;
-    time_inn_enter = time;
 }
 
 bool Player::BuildEnumData(PreparedQueryResult result, ByteBuffer* dataBuffer, ByteBuffer* bitBuffer, bool boosted)
@@ -8429,7 +8422,7 @@ void Player::UpdateArea(uint32 newArea)
 {
     // FFA_PVP flags are area and not zone id dependent
     // so apply them accordingly
-    m_areaUpdateId    = newArea;
+    m_areaUpdateId = newArea;
 
     phaseMgr.AddUpdateFlag(PHASE_UPDATE_FLAG_AREA_UPDATE);
 
@@ -8452,16 +8445,9 @@ void Player::UpdateArea(uint32 newArea)
 
     uint32 const areaRestFlag = (GetTeam() == ALLIANCE) ? AREA_FLAG_REST_ZONE_ALLIANCE : AREA_FLAG_REST_ZONE_HORDE;
     if (area && area->flags & areaRestFlag)
-    {
-        SetFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-        SetRestType(REST_TYPE_IN_FACTION_AREA);
-        InnEnter(time(nullptr), 0);
-    }
-    else if (HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING) && GetRestType() == REST_TYPE_IN_FACTION_AREA)
-    {
-        RemoveFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-        SetRestType(REST_TYPE_NO);
-    }
+        SetRestFlag(REST_FLAG_IN_FACTION_AREA);
+    else
+        RemoveRestFlag(REST_FLAG_IN_FACTION_AREA);
 
     phaseMgr.RemoveUpdateFlag(PHASE_UPDATE_FLAG_AREA_UPDATE);
 
@@ -8549,35 +8535,11 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     if (zone->flags & AREA_FLAG_CAPITAL)                     // Is in a capital city
     {
         if (!pvpInfo.IsHostile || zone->IsSanctuary() || zone->team == AREATEAM_NONE)
-        {
-            SetFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-            SetRestType(REST_TYPE_IN_CITY);
-            InnEnter(time(nullptr), 0);
-        }
+            SetRestFlag(REST_FLAG_IN_CITY);
         pvpInfo.IsInNoPvPArea = true;
     }
     else
-    {
-        if (HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING))
-        {
-            if (GetRestType() == REST_TYPE_IN_TAVERN)        // Still inside a tavern or has recently left
-            {
-                // check that we are still inside the tavern (in areatrigger radius)
-
-                AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(GetInnTriggerId());
-                if (!atEntry || !IsInAreaTriggerRadius(atEntry))
-                {
-                    RemoveFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-                    SetRestType(REST_TYPE_NO);
-                }
-            }
-            else if (GetRestType() != REST_TYPE_IN_FACTION_AREA) // handled in UpdateArea
-            {
-                RemoveFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
-                SetRestType(REST_TYPE_NO);
-            }
-        }
-    }
+        RemoveRestFlag(REST_FLAG_IN_CITY);
 
     UpdatePvPState();
 
@@ -32561,4 +32523,31 @@ bool Player::CanRollForLootIn(WorldObject const* obj) const
         return go->IsLootRecipientGroupMember(GetGUID());
 
     return true;
+}
+
+void Player::SetRestFlag(RestFlag restFlag, uint32 triggerId /*= 0*/)
+{
+    uint32 oldRestMask = _restFlagMask;
+    _restFlagMask |= restFlag;
+
+    if (!oldRestMask && _restFlagMask) // only set flag/time on the first rest state
+    {
+        _restTime = time(nullptr);
+        SetFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
+    }
+
+    if (triggerId)
+        inn_triggerId = triggerId;
+}
+
+void Player::RemoveRestFlag(RestFlag restFlag)
+{
+    uint32 oldRestMask = _restFlagMask;
+    _restFlagMask &= ~restFlag;
+
+    if (oldRestMask && !_restFlagMask) // only remove flag/time on the last rest state remove
+    {
+        _restTime = 0;
+        RemoveFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
+    }
 }

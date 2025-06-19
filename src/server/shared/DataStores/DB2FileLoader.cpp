@@ -189,7 +189,7 @@ DB2FileLoader::Record DB2FileLoader::getRecord(size_t id)
     return Record(*this, data + id*recordSize);
 }
 
-uint32 DB2FileLoader::GetFormatRecordSize(std::string format, int32* index_pos)
+uint32 DB2FileLoader::GetFormatRecordSize(const char* format, int32* index_pos)
 {
     uint32 recordsize = 0;
     int32 i = -1;
@@ -223,7 +223,7 @@ uint32 DB2FileLoader::GetFormatRecordSize(std::string format, int32* index_pos)
     return recordsize;
 }
 
-uint32 DB2FileLoader::GetFormatStringsFields(std::string format)
+uint32 DB2FileLoader::GetFormatStringsFields(const char* format)
 {
     uint32 stringfields = 0;
     for (uint32 x=0; format[x]; ++x)
@@ -233,11 +233,11 @@ uint32 DB2FileLoader::GetFormatStringsFields(std::string format)
     return stringfields;
 }
 
-char* DB2FileLoader::AutoProduceData(std::string format, uint32& records, char**& indexTable)
+char* DB2FileLoader::AutoProduceData(const char* format, uint32& records, char**& indexTable)
 {
 
     typedef char * ptr;
-    if (format.length() != fieldCount)
+    if (strlen(format) != fieldCount)
         return NULL;
 
     //get struct size and index pos
@@ -315,9 +315,9 @@ char* DB2FileLoader::AutoProduceData(std::string format, uint32& records, char**
     return dataTable;
 }
 
-char* DB2FileLoader::AutoProduceStrings(std::string format, char* dataTable, uint32 locale)
+char* DB2FileLoader::AutoProduceStrings(const char* format, char* dataTable, uint32 locale)
 {
-    if (format.length() != fieldCount)
+    if (strlen(format) != fieldCount)
         return NULL;
 
     char* stringPool= new char[stringSize];

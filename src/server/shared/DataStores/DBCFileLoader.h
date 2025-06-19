@@ -22,7 +22,6 @@
 #include "Common.h"
 #include "Utilities/ByteConverter.h"
 #include <cassert>
-#include <string>
 
 class DBCFileLoader
 {
@@ -81,9 +80,9 @@ class DBCFileLoader
         uint32 GetCols() const { return fieldCount; }
         uint32 GetOffset(size_t id) const { return (fieldsOffset != NULL && id < fieldCount) ? fieldsOffset[id] : 0; }
         bool IsLoaded() const { return data != NULL; }
-        char* AutoProduceData(std::string fmt, uint32& count, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char *& sqlDataTable);
-        char* AutoProduceStrings(std::string fmt, char* dataTable, LocaleConstant locale);
-        static uint32 GetFormatRecordSize(std::string format, int32 * index_pos = NULL);
+        char* AutoProduceData(const char* fmt, uint32& count, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char*& sqlDataTable);
+        char* AutoProduceStrings(const char* fmt, char* dataTable, LocaleConstant locale);
+        static uint32 GetFormatRecordSize(const char* format, int32* index_pos = NULL);
     private:
 
         uint32 recordSize;

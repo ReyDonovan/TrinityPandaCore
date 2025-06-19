@@ -126,7 +126,7 @@ DBCFileLoader::Record DBCFileLoader::getRecord(size_t id)
     return Record(*this, data + id * recordSize);
 }
 
-uint32 DBCFileLoader::GetFormatRecordSize(std::string format, int32* index_pos)
+uint32 DBCFileLoader::GetFormatRecordSize(const char* format, int32* index_pos)
 {
     uint32 recordsize = 0;
     int32 i = -1;
@@ -168,7 +168,7 @@ uint32 DBCFileLoader::GetFormatRecordSize(std::string format, int32* index_pos)
     return recordsize;
 }
 
-char* DBCFileLoader::AutoProduceData(std::string format, uint32& records, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char*& sqlDataTable)
+char* DBCFileLoader::AutoProduceData(const char* format, uint32& records, char**& indexTable, uint32 sqlRecordCount, uint32 sqlHighestIndex, char*& sqlDataTable)
 {
     /*
     format STRING, NA, FLOAT, NA, INT <=>
@@ -182,7 +182,7 @@ char* DBCFileLoader::AutoProduceData(std::string format, uint32& records, char**
     */
 
     typedef char* ptr;
-    if (format.length() != fieldCount)
+    if (strlen(format) != fieldCount)
         return NULL;
 
     //get struct size and index pos
@@ -265,9 +265,9 @@ char* DBCFileLoader::AutoProduceData(std::string format, uint32& records, char**
     return dataTable;
 }
 
-char* DBCFileLoader::AutoProduceStrings(std::string format, char* dataTable, LocaleConstant locale)
+char* DBCFileLoader::AutoProduceStrings(char const* format, char* dataTable, LocaleConstant locale)
 {
-    if (format.length() != fieldCount)
+    if (strlen(format) != fieldCount)
         return NULL;
 
     char* stringPool = new char[stringSize];

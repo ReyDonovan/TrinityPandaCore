@@ -116,15 +116,10 @@ namespace Trinity
         * Returns a pointer to mapped value (or the value itself if map stores pointers)
         */
         template<class M>
-        auto MapGetValuePtr(M& map, typename M::key_type const& key) 
-            -> decltype((std::declval<M>().find(key) != std::declval<M>().end()) ? 
-                         (std::is_pointer<typename M::mapped_type>::value ? 
-                          static_cast<typename M::mapped_type>(nullptr) : 
-                          static_cast<typename M::mapped_type*>(&std::declval<typename M::mapped_type>())) : 
-                         nullptr)
+        auto MapGetValuePtr(M& map, typename M::key_type const& key)
         {
             auto itr = map.find(key);
-            if constexpr (std::is_pointer<typename M::mapped_type>::value)
+            if constexpr (std::is_pointer_v<typename M::mapped_type>)
                 return itr != map.end() ? itr->second : nullptr;
             else
                 return itr != map.end() ? &itr->second : nullptr;

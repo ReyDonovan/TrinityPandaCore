@@ -2442,7 +2442,7 @@ class AreaTrigger_at_q_wood_and_shade : public AreaTriggerScript
 
         bool OnTrigger(Player* player, AreaTriggerEntry const* areaTrigger, bool /*entered*/) override
         {
-            if (areaTrigger->id == 8124)
+            if (areaTrigger->ID == 8124)
                 player->KilledMonsterCredit(62955);
             else
                 player->KilledMonsterCredit(62956);
@@ -2707,7 +2707,7 @@ class AreaTrigger_q31185 : public AreaTriggerScript
             if (player->GetDistance(dog) > 10.0f)
                 return true;
 
-            switch (areaTrigger->id)
+            switch (areaTrigger->ID)
             {
                 case AT_SILT_VENS:
                     if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_SILT_VENS))

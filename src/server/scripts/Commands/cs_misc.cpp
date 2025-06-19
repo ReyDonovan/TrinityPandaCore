@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -1266,10 +1264,10 @@ public:
         for (uint32 id = 0; id < numRows; ++id)
         {
             AreaTriggerEntry const* at = sAreaTriggerStore.LookupEntry(id);
-            if (!at || at->mapid != from.GetMapId())
+            if (!at || at->ContinentID != from.GetMapId())
                 continue;
 
-            Position pos = { at->x, at->y, at->z };
+            Position pos = { at->Pos.X, at->Pos.Y, at->Pos.Z };
             if (from.GetExactDistSq(&pos) > distance * distance)
                 continue;
 
@@ -1278,13 +1276,13 @@ public:
 
         areatriggers.sort([&from](AreaTriggerEntry const* a, AreaTriggerEntry const* b)
         {
-            Position posA = { a->x, a->y, a->z };
-            Position posB = { b->x, b->y, b->z };
+            Position posA = { a->Pos.X, a->Pos.Y, a->Pos.Z };
+            Position posB = { b->Pos.X, b->Pos.Y, b->Pos.Z };
             return from.GetExactDist2dSq(&posA) < from.GetExactDist2dSq(&posB);
         });
 
         for (auto at : areatriggers)
-            handler->PSendSysMessage("|cFFFFFFFFTrigger %u, x: %.5f, y: %.5f, z: %.5f, radius: %g, box: { %g, %g, %g, %g }", at->id, at->x, at->y, at->z, at->radius, at->box_x, at->box_y, at->box_z, at->box_orientation);
+            handler->PSendSysMessage("|cFFFFFFFFTrigger %u, x: %.5f, y: %.5f, z: %.5f, radius: %g, box: { %g, %g, %g, %g }", at->ID, at->Pos.X, at->Pos.Y, at->Pos.Z, at->Radius, at->BoxLength, at->BoxWidth, at->BoxHeight, at->BoxYaw);
 
         handler->PSendSysMessage("Found near areatriggers (distance %f): %u", distance, areatriggers.size());
 

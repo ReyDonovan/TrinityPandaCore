@@ -1314,7 +1314,7 @@ class AreaTrigger_at_shadopan_archery : public AreaTriggerScript
         {
             if (InstanceScript* instance = player->GetInstanceScript())
             {
-                switch (areaTrigger->id)
+                switch (areaTrigger->ID)
                 {
                     case AREATRIGGER_ARCHERY_FIRST_BEGIN:
                         if (instance->GetData(DATA_ARCHERY) != IN_PROGRESS && instance->GetData(DATA_ARCHERY) != DONE)

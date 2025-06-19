@@ -67,7 +67,7 @@ RealmID = 1
 #        Example:     "@prefix@/share/Torghast"
 #        Default:     "."
 
-DataDir = "data"
+DataDir = "Data"
 
 #
 #    LogsDir
@@ -76,7 +76,7 @@ DataDir = "data"
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = "logs"
+LogsDir = "Logs"
 
 #
 #    LoginDatabaseInfo
@@ -93,9 +93,9 @@ LogsDir = "logs"
 #                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
 #                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth_mop"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world_mop"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters_mop"
+LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
 
 #
 #    LoginDatabase.WorkerThreads

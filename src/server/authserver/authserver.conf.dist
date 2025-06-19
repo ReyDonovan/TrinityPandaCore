@@ -37,7 +37,7 @@
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+LogsDir = "Logs"
 
 #
 #    MaxPingTime
@@ -137,7 +137,7 @@ WrongPass.BanType = 0
 #                                                                           Unix/Linux)
 #        Default:     "127.0.0.1;3306;trinity;trinity;auth"
 
-LoginDatabaseInfo = "127.0.0.1;3306;trinity;trinity;mop_auth"
+LoginDatabaseInfo = "127.0.0.1;3306;trinity;trinity;auth"
 
 #
 #    LoginDatabase.WorkerThreads

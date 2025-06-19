@@ -3877,7 +3877,7 @@ class spell_reverberating_smash : public SpellScript
     }
 };
 
-class ReverberatingSmashRangePredicate : public std::binary_function<uint32, WorldLocation const*, bool>
+class ReverberatingSmashRangePredicate
 {
     public:
         ReverberatingSmashRangePredicate(uint32 const& spell_id, WorldLocation const* m_pos) : _spell_id(spell_id), _pos(m_pos) { }

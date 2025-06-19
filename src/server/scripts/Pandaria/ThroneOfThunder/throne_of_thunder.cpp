@@ -3642,7 +3642,7 @@ class spell_cosmic_strike_summon : public SpellScript
     }
 };
 
-class RitualLightningPredicate : public std::binary_function<Unit*, Unit*, bool>
+class RitualLightningPredicate
 {
     public:
         RitualLightningPredicate(Unit* const caster, const uint32 spell_id) : _caster(caster), _spell_id(spell_id) { }

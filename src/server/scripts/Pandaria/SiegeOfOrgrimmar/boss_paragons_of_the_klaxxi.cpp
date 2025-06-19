@@ -3660,7 +3660,7 @@ class spell_paragon_fiery_edge_periodic : public AuraScript
     }
 };
 
-class FieryEdgePredicate : public std::binary_function<Unit*, Unit*, bool>
+class FieryEdgePredicate
 {
     public:
         FieryEdgePredicate(Unit* const caster, Unit* const target) : _caster(caster), _target(target) { }

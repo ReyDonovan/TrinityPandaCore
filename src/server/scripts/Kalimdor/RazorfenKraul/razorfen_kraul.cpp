@@ -149,7 +149,7 @@ enum SnufflenoseGopher
     POINT_TUBBER                 = 0
 };
 
-struct DistanceOrder : public std::binary_function<GameObject, GameObject, bool>
+struct DistanceOrder
 {
     DistanceOrder(Creature* me) : me(me) { }
 

@@ -103,7 +103,7 @@ class boss_palehoof : public CreatureScript
                     Sequence[i] = Phase(i);
 
                 /// This ensures a random order and only executes each phase once.
-                std::random_shuffle(Sequence, Sequence + PHASE_GORTOK_PALEHOOF);
+                std::shuffle(Sequence, Sequence + PHASE_GORTOK_PALEHOOF, std::default_random_engine{});
 
                 uiArcingSmashTimer = 7 * IN_MILLISECONDS;
                 uiImpaleTimer = 10 * IN_MILLISECONDS;

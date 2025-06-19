@@ -1673,7 +1673,7 @@ struct npc_garajals_soul : public ScriptedAI
 
             // Random at wave end (fucking list issue with shuffle)
             std::vector<uint64> buf(possessedTargets.begin(), possessedTargets.end());
-            std::random_shuffle(buf.begin(), buf.end());
+            std::shuffle(buf.begin(), buf.end(), std::default_random_engine{});
             possessedTargets.clear();
             std::copy(buf.begin(), buf.end(), std::inserter(possessedTargets, possessedTargets.begin()));
 

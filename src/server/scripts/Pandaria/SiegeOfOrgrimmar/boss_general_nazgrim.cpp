@@ -573,7 +573,7 @@ class boss_general_nazgrim : public CreatureScript
 
                     // Select some 2 spawn positions
                     std::vector<uint32> korkronPosList = { 0, 1, 2, 3, 4 };
-                    std::random_shuffle(korkronPosList.begin(), korkronPosList.end());
+                    std::shuffle(korkronPosList.begin(), korkronPosList.end(), std::default_random_engine{});
                     korkronPosList.resize(4);
 
                     if (IsHeroic())

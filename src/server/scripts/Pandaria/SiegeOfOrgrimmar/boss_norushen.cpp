@@ -900,7 +900,7 @@ class boss_amalgam_of_corruption : public CreatureScript
                         if (invOrbPosType.find(itr)->second != 0 && std::find(choisePos.begin(), choisePos.end(), itr) != choisePos.end())
                             choisePos.erase(std::find(choisePos.begin(), choisePos.end(), itr));
 
-                    std::random_shuffle(choisePos.begin(), choisePos.end());
+                    std::shuffle(choisePos.begin(), choisePos.end(), std::default_random_engine{});
 
                     if (choisePos.size() > count)
                         choisePos.resize(count);

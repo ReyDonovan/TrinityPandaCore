@@ -137,7 +137,7 @@ class npc_emperor_shaohao : public CreatureScript
 
                 // Random at wave end
                 std::vector<uint32> buf(celestialSequence.begin(), celestialSequence.end());
-                std::random_shuffle(buf.begin(), buf.end());
+                std::shuffle(buf.begin(), buf.end(), std::default_random_engine{});
                 celestialSequence.clear();
                 std::copy(buf.begin(), buf.end(), std::inserter(celestialSequence, celestialSequence.begin()));
 
@@ -154,7 +154,7 @@ class npc_emperor_shaohao : public CreatureScript
 
                         // Random at wave end
                         std::vector<uint32> buf(celestialSequence.begin(), celestialSequence.end());
-                        std::random_shuffle(buf.begin(), buf.end());
+                        std::shuffle(buf.begin(), buf.end(), std::default_random_engine{});
                         celestialSequence.clear();
                         std::copy(buf.begin(), buf.end(), std::inserter(celestialSequence, celestialSequence.begin()));
 

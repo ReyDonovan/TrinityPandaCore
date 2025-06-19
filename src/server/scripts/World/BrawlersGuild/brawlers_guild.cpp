@@ -4984,7 +4984,7 @@ class spell_brawlers_guild_conjure_unstable_mines : public AuraScript
 };
 
 // We should select mines between battletron and player, it`ll work like ur spell missle throw her (nice logic)
-class UnstableMinesProcPredicate : public std::binary_function<Unit*, Unit*, bool>
+class UnstableMinesProcPredicate
 {
     public:
         UnstableMinesProcPredicate(Unit* const m_caster, Unit* const m_target) : _caster(m_caster), _target(m_target) { }

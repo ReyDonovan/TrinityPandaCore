@@ -90,7 +90,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                 m_uiBossCount = 0;
 
                 std::iota(std::begin(m_auiBossNumber), std::end(m_auiBossNumber), 0);
-                std::random_shuffle(std::begin(m_auiBossNumber), std::end(m_auiBossNumber));
+                std::shuffle(std::begin(m_auiBossNumber), std::end(m_auiBossNumber), std::default_random_engine{});
             }
 
             GameObject* GetGameObjectFromStorage(uint32 uiEntry)

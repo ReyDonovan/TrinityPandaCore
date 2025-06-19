@@ -207,7 +207,7 @@ class npc_apparition_of_fear : public CreatureScript
                                 if (targets.empty())
                                     return;
 
-                                std::random_shuffle(targets.begin(), targets.end());
+                                std::shuffle(targets.begin(), targets.end(), std::default_random_engine{});
                                 if (Unit* target = sObjectAccessor->FindUnit((*targets.begin())))
                                     me->CastSpell(target, SPELL_CORRUPTION_BOLT, true);
                             }
@@ -363,7 +363,7 @@ class npc_apparition_of_terror : public CreatureScript
                                 if (targets.empty())
                                     return;
 
-                                std::random_shuffle(targets.begin(), targets.end());
+                                std::shuffle(targets.begin(), targets.end(), std::default_random_engine{});
                                 if (Unit* target = sObjectAccessor->FindUnit((*targets.begin())))
                                     me->CastSpell(target, SPELL_CORRUPTION_BOLT, true);
                             }

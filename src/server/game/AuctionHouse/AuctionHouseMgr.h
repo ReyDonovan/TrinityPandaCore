@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -17,8 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SF_AUCTION_HOUSE_MGR_H
-#define SF_AUCTION_HOUSE_MGR_H
+#ifndef _AUCTION_HOUSE_MGR_H
+#define _AUCTION_HOUSE_MGR_H
 
 #include <ace/Singleton.h>
 
@@ -31,7 +29,7 @@ class Player;
 class WorldPacket;
 class LogFile;
 
-#define MIN_AUCTION_TIME    (12*HOUR)
+#define MIN_AUCTION_TIME    (12 * HOUR)
 #define MAX_AUCTION_ITEMS    32
 #define AUCTION_SEARCH_DELAY 300 // time in MS till the player can search again
 
@@ -66,6 +64,13 @@ enum MailAuctionAnswers
     AUCTION_SALE_PENDING        = 6
 };
 
+enum AuctionHouses
+{
+    AUCTIONHOUSE_ALLIANCE       = 2,
+    AUCTIONHOUSE_HORDE          = 6,
+    AUCTIONHOUSE_NEUTRAL        = 7
+};
+
 struct AuctionEntry
 {
     uint32 Id;
@@ -74,12 +79,12 @@ struct AuctionEntry
     uint32 itemEntry;
     uint32 itemCount;
     uint32 owner;
-    uint32 startbid;                                        //maybe useless
+    uint32 startbid;                                        // maybe useless
     uint32 bid;
     uint32 buyout;
     time_t expire_time;
     uint32 bidder;
-    uint32 deposit;                                         //deposit can be calculated only when creating auction
+    uint32 deposit;                                         // deposit can be calculated only when creating auction
     AuctionHouseEntry const* auctionHouseEntry;             // in AuctionHouse.dbc
     uint32 factionTemplateId;
 
@@ -153,7 +158,7 @@ class AuctionHouseObject
 
     void AddAuction(AuctionEntry* auction, bool skipLock = false);
 
-    bool RemoveAuction(AuctionEntry* auction, uint32 itemEntry, bool skipLock = false);
+    bool RemoveAuction(AuctionEntry* auction, bool skipLock = false);
 
     void Update();
 

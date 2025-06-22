@@ -1,4 +1,21 @@
-﻿#include "CustomTransmogrification.h"
+﻿/*
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "CustomTransmogrification.h"
 #pragma execution_character_set("UTF-8")
 
 
@@ -372,7 +389,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, uint64 i
         itemTransmogrified->SetNotRefundable(player);
         itemTransmogrified->ClearSoulboundTradeable(player);
 
-        if (itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_EQUIPED || itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_USE)
+        if (itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_ACQUIRE || itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_USE)
             itemTransmogrifier->SetBinding(true);
 
         itemTransmogrifier->SetOwnerGUID(player->GetGUID());

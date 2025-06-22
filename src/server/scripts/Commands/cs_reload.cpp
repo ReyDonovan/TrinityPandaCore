@@ -102,10 +102,10 @@ public:
             { "gossip_menu_option_locale",      SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesGossipMenuOptionCommand,    },
             { "item_enchantment_template",      SEC_ADMINISTRATOR,  true,   &HandleReloadItemEnchantementsCommand,          },
             { "item_loot_template",             SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesItemCommand,          },
+            { "item_template_locale",           SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesItemCommand,                },
             { "lfg_dungeon_rewards",            SEC_ADMINISTRATOR,  true,   &HandleReloadLfgRewardsCommand,                 },
             { "locales_creature_text",          SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesCreatureTextCommand,        },
             { "locales_gameobject",             SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesGameobjectCommand,          },
-            { "locales_item",                   SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesItemCommand,                },
             { "locales_npc_text",               SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesNpcTextCommand,             },
             { "locales_page_text",              SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPageTextCommand,            },
             { "locales_points_of_interest",     SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPointsOfInterestCommand,    },
@@ -1127,9 +1127,9 @@ public:
 
     static bool HandleReloadLocalesItemCommand(ChatHandler* handler, const char* /*args*/)
     {
-        TC_LOG_INFO("misc", "Re-Loading Locales Item ... ");
+        TC_LOG_INFO("misc", "Re-Loading Item Template Locale ... ");
         sObjectMgr->LoadItemLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_item` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `item_template_locale` reloaded.");
         return true;
     }
 

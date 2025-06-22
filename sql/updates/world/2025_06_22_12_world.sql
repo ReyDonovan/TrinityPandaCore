@@ -1,0 +1,1 @@
+RENAME TABLE `locales_item` TO `item_template_locale`;

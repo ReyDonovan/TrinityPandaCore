@@ -317,7 +317,7 @@ void ObjectMgr::LoadCreatureLocales()
     _creatureLocaleStore.clear();                              // need for reload case
 
     //                                                  0      1       2     3
-    QueryResult result = WorldDatabase.Query("SELECT entry, locale, Name, SubName FROM locales_creature");
+    QueryResult result = WorldDatabase.Query("SELECT entry, locale, Name, SubName FROM creature_template_locale");
 
     if (!result)
         return;
@@ -342,7 +342,7 @@ void ObjectMgr::LoadCreatureLocales()
         
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %lu creature locale strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded %lu Creature Locale Strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadGossipMenuItemsLocales()

@@ -296,21 +296,25 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket& recvData)
 
     if (info)
     {
-        std::string Name, SubName;
+        std::string Name, FemaleName, SubName;
         Name = info->Name;
+        FemaleName = info->FemaleName;
         SubName = info->SubName;
+
         uint8 qItemsSize = 0;
+
         for (int i = 0; i < MAX_CREATURE_QUEST_ITEMS; i++)
             if (info->questItems[i] != 0)
                 qItemsSize++;
 
-        int loc_idx = GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant locale = GetSessionDbLocaleIndex();
+        if (locale >= 0)
         {
-            if (CreatureLocale const* cl = sObjectMgr->GetCreatureLocale(entry))
+            if (CreatureLocale const* creatureLocale = sObjectMgr->GetCreatureLocale(entry))
             {
-                ObjectMgr::GetLocaleString(cl->Name, loc_idx, Name);
-                ObjectMgr::GetLocaleString(cl->SubName, loc_idx, SubName);
+                ObjectMgr::GetLocaleString(creatureLocale->Name, locale, Name);
+                ObjectMgr::GetLocaleString(creatureLocale->FemaleName, locale, FemaleName);
+                ObjectMgr::GetLocaleString(creatureLocale->SubName, locale, SubName);
             }
         }
 
@@ -320,10 +324,14 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket& recvData)
         data.WriteBits(qItemsSize, 22);                       // Quest items
         data.WriteBits(0, 11);
 
-        for (int i = 0; i < 4; i++)
-        {            
-            data.WriteBits(i == 0 ? Name.length() + 1 : 0, 11);
-            data.WriteBits(0, 11);
+        for (int i = 0; i < 8; i++)
+        {
+            if (i == 0)
+                data.WriteBits(Name.length() + 1, 11);
+            else if (i == 1)
+                data.WriteBits(FemaleName.length() + 1, 11);
+            else
+                data.WriteBits(0, 11);
         }
 
         data.WriteBit(info->RacialLeader);

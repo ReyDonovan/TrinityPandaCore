@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -82,8 +80,19 @@ enum eTradeskill
     GOSSIP_SENDER_SEC_STABLEMASTER      = 10
 };
 
-// Defined fuctions to use with player.
+class Creature;
+void ClearGossipMenuFor(Player* player);
+// Using provided text, not from DB
+void AddGossipItemFor(Player* player, uint32 icon, const char* text, uint32 sender, uint32 action);
+// Using provided texts, not from DB
+void AddGossipItemFor(Player* player, uint32 icon, const char* text, uint32 sender, uint32 action, const char* popupText, uint32 popupMoney, bool coded);
+// Uses gossip item info from DB
+void AddGossipItemFor(Player* player, uint32 gossipMenuID, uint32 gossipMenuItemID, uint32 sender, uint32 action);
+void SendGossipMenuFor(Player* player, uint32 npcTextID, ObjectGuid const& guid);
+void SendGossipMenuFor(Player* player, uint32 npcTextID, Creature const* creature);
+void CloseGossipMenuFor(Player* player);
 
+// Defined fuctions to use with player.
 // This fuction add's a menu item,
 // a - Icon Id
 // b - Text

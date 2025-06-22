@@ -1,11 +1,9 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * This file is part of the DestinyCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
+ * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -16,13 +14,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* ScriptData
-Name: reload_commandscript
-%Complete: 100
-Comment: All reload related commands
-Category: commandscripts
-EndScriptData */
 
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
@@ -90,10 +81,10 @@ public:
             { "creature_loot_template",         SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesCreatureCommand,      },
             { "creature_onkill_reputation",     SEC_ADMINISTRATOR,  true,   &HandleReloadOnKillReputationCommand,           },
             { "creature_queststarter",          SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureQuestStarterCommand,       },
-            { "creature_scaling",              SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureScallingCommand,           },
+            { "creature_scaling",               SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureScallingCommand,           },
             { "creature_summon_groups",         SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureSummonGroupsCommand,       },
             { "creature_template",              SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureTemplateCommand,           },
-            //{ "db_script_string",              SEC_ADMINISTRATOR, true,  &HandleReloadDbScriptStringCommand,            },
+            //{ "db_script_string",               SEC_ADMINISTRATOR,  true,   &HandleReloadDbScriptStringCommand,             },
             { "disables",                       SEC_ADMINISTRATOR,  true,   &HandleReloadDisablesCommand,                   },
             { "disenchant_loot_template",       SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesDisenchantCommand,    },
             { "event_scripts",                  SEC_ADMINISTRATOR,  true,   &HandleReloadEventScriptsCommand,               },
@@ -109,7 +100,7 @@ public:
             { "item_enchantment_template",      SEC_ADMINISTRATOR,  true,   &HandleReloadItemEnchantementsCommand,          },
             { "item_loot_template",             SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesItemCommand,          },
             { "lfg_dungeon_rewards",            SEC_ADMINISTRATOR,  true,   &HandleReloadLfgRewardsCommand,                 },
-            { "locales_achievement_reward",     SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesAchievementRewardCommand,   },
+            { "achievement_reward_locale",      SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesAchievementRewardCommand,   },
             { "locales_creature",               SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesCreatureCommand,            },
             { "locales_creature_text",          SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesCreatureTextCommand,        },
             { "locales_gameobject",             SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesGameobjectCommand,          },
@@ -165,7 +156,7 @@ public:
             { "creature_loot_currency",         SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureLootCurrency,              },
             { "gocollision",                    SEC_ADMINISTRATOR,  true,   &HandleReloadGOCollisionCommand,                },
             { "battlepay",                      SEC_ADMINISTRATOR,  true,   &HandleReloadBattlePayCommand,                  },
-			{ "bad_word",                     SEC_ADMINISTRATOR, true,  &HandleReloadBadWordCommand,                   },
+			{ "bad_word",                       SEC_ADMINISTRATOR,  true,   &HandleReloadBadWordCommand,                    },
         };
         static std::vector<ChatCommand> commandTable =
         {

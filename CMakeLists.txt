@@ -9,10 +9,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# We require CMake >= 3.24
+cmake_minimum_required(VERSION 3.24)
+
 # Set projectname (must be done AFTER setting configurationtypes)
 project(TrinityCore)
-
-cmake_minimum_required(VERSION 3.24)
 
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
@@ -23,6 +24,7 @@ cmake_policy(SET CMP0005 NEW)
 cmake_policy(SET CMP0043 NEW) # Ignore COMPILE_DEFINITIONS_<Config> properties
 cmake_policy(SET CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted - prevents intepreting if (SOME_STRING_VARIABLE MATCHES "MSVC") as if (SOME_STRING_VARIABLE MATCHES "1")
 cmake_policy(SET CMP0074 NEW) # find_package() uses <PackageName>_ROOT variables
+cmake_policy(SET CMP0144 NEW) # find_package uses upper-case <PACKAGENAME>_ROOT
 
 # Set RPATH-handing (CMake parameters)
 set(CMAKE_SKIP_BUILD_RPATH 0)

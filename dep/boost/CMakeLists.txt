@@ -52,8 +52,7 @@ target_compile_definitions(boost
     -DBOOST_DATE_TIME_NO_LIB
     -DBOOST_REGEX_NO_LIB
     -DBOOST_CHRONO_NO_LIB
-    -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
-    -DBOOST_SYSTEM_USE_UTF8)
+    ${OPTIONAL_BOOST_NO_SCOPED_ENUMS})
 
 if (WITH_BOOST_STACKTRACE AND NOT WIN32)
   message("*** libbacktrace will be linked")

@@ -1521,7 +1521,7 @@ class npc_ragnaros_firelands_lava_scion : public CreatureScript
         private:
             EventMap events;
 
-            struct BlazingHeatSelector : public TC_UNARY_FUNCTION<Unit*, bool>
+            struct BlazingHeatSelector
             {
                 public:
                     

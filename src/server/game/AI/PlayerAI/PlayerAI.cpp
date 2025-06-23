@@ -20,7 +20,6 @@
 #include "SpellAuras.h"
 #include "SpellAuraEffects.h"
 #include "TargetedMovementGenerator.h"
-#include "UnaryFunction.h"
 
 enum Spells
 {
@@ -617,7 +616,7 @@ void PlayerAI::CancelAllShapeshifts()
         me->RemoveOwnedAura(aura, AURA_REMOVE_BY_CANCEL);
 }
 
-struct UncontrolledTargetSelectPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+struct UncontrolledTargetSelectPredicate
 {
     bool operator()(Unit const* target) const
     {

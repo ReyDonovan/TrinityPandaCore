@@ -28,7 +28,6 @@
 #include "Containers.h"
 #include "LootLockoutMap.h"
 #include "Guild.h"
-#include "UnaryFunction.h"
 
 static Rates const qualityToRate[MAX_ITEM_QUALITY] =
 {
@@ -55,7 +54,7 @@ LootStore LootTemplates_Skinning("skinning_loot_template",           "creature s
 LootStore LootTemplates_Spell("spell_loot_template",                 "spell id (random item creating)", false);
 
 // Selects invalid loot items to be removed from group possible entries (before rolling)
-struct LootGroupInvalidSelector : public TC_UNARY_FUNCTION<LootStoreItem*, bool>
+struct LootGroupInvalidSelector
 {
     explicit LootGroupInvalidSelector(Loot const& loot, uint32 lootmode, Player* player)
         : _loot(loot), _lootmode(lootmode), _player(player) { }

@@ -1431,7 +1431,7 @@ class spell_meljarak_amber_prison : public SpellScript
     }
 };
 
-class MendingPredicate : public TC_UNARY_FUNCTION<uint32, bool>
+class MendingPredicate
 {
     public:
         MendingPredicate(const uint32 entry) : _entry(entry) { }
@@ -1607,7 +1607,7 @@ class spell_meljarak_wind_bomb : public SpellScript
     }
 };
 
-class WhirlingBladePredicate : public TC_UNARY_FUNCTION<Creature*, bool>
+class WhirlingBladePredicate
 {
     public:
         WhirlingBladePredicate(Creature* const m_caster) : _caster(m_caster) { }

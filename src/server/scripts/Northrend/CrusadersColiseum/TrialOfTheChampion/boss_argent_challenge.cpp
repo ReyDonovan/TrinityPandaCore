@@ -370,7 +370,7 @@ class boss_eadric : public CreatureScript
         }
 };
 
-class OrientationCheck : public TC_UNARY_FUNCTION<Unit*, bool>
+class OrientationCheck
 {
     public:
         explicit OrientationCheck(Unit* _caster) : caster(_caster) { }

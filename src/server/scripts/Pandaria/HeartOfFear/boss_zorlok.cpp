@@ -1780,7 +1780,7 @@ class spell_pheromones_of_zeal : public SpellScriptLoader
 
 };
 
-class ExhaleTargetFilter : public TC_UNARY_FUNCTION<Unit*, bool>
+class ExhaleTargetFilter
 {
     public:
         explicit ExhaleTargetFilter(Unit* caster) : _caster(caster) { }

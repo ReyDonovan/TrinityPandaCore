@@ -1099,7 +1099,7 @@ class npc_bataari_yaungol : public CreatureScript
             }
 
             private:
-                struct HeroicLeapPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+                struct HeroicLeapPredicate
                 {
                     public:
                         HeroicLeapPredicate(Creature const* me) : _me(me) { }

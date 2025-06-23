@@ -1200,7 +1200,7 @@ class boss_spirit_kings : public CreatureScript
             }
 
             private:
-                struct PillagePredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+                struct PillagePredicate
                 {
                     public:
                         PillagePredicate(Creature const* me) : _me(me) { }

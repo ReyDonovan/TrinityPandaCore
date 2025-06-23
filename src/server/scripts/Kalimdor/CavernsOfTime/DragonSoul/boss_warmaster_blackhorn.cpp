@@ -759,7 +759,7 @@ class npc_warmaster_blackhorn_goriona: public CreatureScript
             uint8 phase;
             InstanceScript* instance;
 
-            struct TwilightFlamesSelector : public TC_UNARY_FUNCTION<Unit*, bool>
+            struct TwilightFlamesSelector
             {
                 public:
                     

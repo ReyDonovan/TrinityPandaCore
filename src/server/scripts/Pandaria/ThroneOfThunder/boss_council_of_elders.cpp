@@ -2449,7 +2449,7 @@ class spell_malakk_frostbite_selector : public SpellScript
     }
 };
 
-class FrostbitePredicate : public TC_UNARY_FUNCTION<Creature*, bool>
+class FrostbitePredicate
 {
     public:
         FrostbitePredicate(Creature* const m_caster) : _caster(m_caster) { }

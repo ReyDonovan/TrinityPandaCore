@@ -285,7 +285,7 @@ class boss_general_pavalak : public CreatureScript
             int8 phase;
             uint64 rushTargetGUID;
 
-            struct BladeRushPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+            struct BladeRushPredicate
             {
                 public:
                     BladeRushPredicate(Creature const* me) : _me(me) { }

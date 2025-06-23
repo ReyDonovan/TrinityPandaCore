@@ -302,7 +302,7 @@ class npc_cursed_mogu_sculpture : public CreatureScript
             }
 
             private:
-                struct CurseOfVitalityPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+                struct CurseOfVitalityPredicate
                 {
                     public:
                         CurseOfVitalityPredicate(Creature const* me) : _me(me) { }

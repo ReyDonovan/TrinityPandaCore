@@ -190,7 +190,7 @@ Position const FreyaBeacons[FREYA_SPAWNS] =
     {185.62f, 54.78f, 409.81f, 0.0f},
 };
 
-struct FlameLeviathanPursuedTargetSelector : TC_UNARY_FUNCTION<WorldObject*, bool>
+struct FlameLeviathanPursuedTargetSelector
 {
     bool operator() (WorldObject* target)
     {

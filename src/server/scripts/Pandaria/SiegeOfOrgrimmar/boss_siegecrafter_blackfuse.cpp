@@ -264,7 +264,7 @@ Position CalculateMissleThrowPosition(uint64 m_ownerGUID, uint32 count = 0)
 }
 
 // Predicate on select player that not has a tank spec and actually not on conveyor
-struct NonTankSpecConveyorPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+struct NonTankSpecConveyorPredicate
 {
     public:
         NonTankSpecConveyorPredicate(Creature const* me) : _me(me) { }

@@ -632,7 +632,7 @@ class npc_end_time_time_twisted_sorceress : public CreatureScript
         }
 };
 
-class BlinkPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+class BlinkPredicate
 {
     public:
         BlinkPredicate(Unit* const m_caster) : _caster(m_caster) { }

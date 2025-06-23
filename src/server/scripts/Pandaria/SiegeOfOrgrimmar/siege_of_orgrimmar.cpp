@@ -4990,7 +4990,7 @@ class spell_aqueous_defender_vortex : public SpellScript
     }
 };
 
-class VortexPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+class VortexPredicate
 {
     public:
         VortexPredicate(Unit* const m_caster) : _caster(m_caster) { }

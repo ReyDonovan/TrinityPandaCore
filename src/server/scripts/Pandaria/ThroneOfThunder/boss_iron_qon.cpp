@@ -1672,7 +1672,7 @@ class spell_arcing_lightning : public AuraScript
     }
 };
 
-class ArcingLightningSwitchPredicate : public TC_UNARY_FUNCTION<Unit*, bool>
+class ArcingLightningSwitchPredicate
 {
     public:
         ArcingLightningSwitchPredicate(Unit const* me) : _me(me) { }

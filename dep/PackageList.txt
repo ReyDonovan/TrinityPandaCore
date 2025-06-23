@@ -1,4 +1,4 @@
-SkyFire uses (parts of or in whole) the following opensource software :
+DestinyCore uses (parts of or in whole) the following opensource software:
 
 ACE (ADAPTIVE Communication Environment)
   http://www.cs.wustl.edu/~schmidt/ACE.html
@@ -7,6 +7,11 @@ ACE (ADAPTIVE Communication Environment)
 bzip2 (a freely available, patent free, high-quality data compressor)
   http://www.bzip.org/
   Version: 1.0.6
+  
+  fmt (a small, safe and fast formatting library)
+  https://github.com/fmtlib/fmt
+  Version: 7.0.3 https://github.com/fmtlib/fmt/releases/tag/7.0.3
+  Version: 7.1.3 https://github.com/fmtlib/fmt/releases/tag/7.1.3
 
 G3D (a commercial-grade C++ 3D engine available as Open Source (BSD License)
   http://g3d.sourceforge.net/

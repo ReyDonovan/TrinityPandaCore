@@ -19,9 +19,16 @@
 #define TRINITY_CONTAINERS_H
 
 #include "Define.h"
+#include "Util.h"
+#include <algorithm>
+#include <iterator>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
+#include <vector>
 #include <list>
 #include <random>
-#include "Util.h"
+
 
 //! Because circular includes are bad
 extern uint32 urand(uint32 min, uint32 max);

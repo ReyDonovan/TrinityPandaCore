@@ -126,7 +126,7 @@ namespace Trinity
         auto MapGetValuePtr(M& map, typename M::key_type const& key)
         {
             auto itr = map.find(key);
-            if constexpr (std::is_pointer_v<typename M::mapped_type>)
+            if constexpr (std::is_pointer<typename M::mapped_type>::value)
                 return itr != map.end() ? itr->second : nullptr;
             else
                 return itr != map.end() ? &itr->second : nullptr;
